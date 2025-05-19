@@ -12,18 +12,29 @@ public enum RoadLine
 public class Runner : MonoBehaviour
 {
     [SerializeField] RoadLine roadLine;
+    [SerializeField] Rigidbody rigidBody;
 
-    Rigidbody characterRigidbody;
+    [SerializeField] float positionX = 0;
 
-    void Start()
+    private void Awake()
     {
-        characterRigidbody = GetComponent<Rigidbody>();
+        rigidBody = GetComponent<Rigidbody>();
+    }
+
+    private void Start()
+    {
+        
+    }
+    private void FixedUpdate()
+    {
+        Move();
     }
 
     void Update()
     {
         Keyboard();
     }
+
 
     void Keyboard()
     {
@@ -32,8 +43,6 @@ public class Runner : MonoBehaviour
             if(roadLine != RoadLine.LEFT)
             {
                 roadLine--;
-
-                characterRigidbody.transform.position -= new Vector3(4, 0, 0);
             }
         }
 
@@ -42,11 +51,14 @@ public class Runner : MonoBehaviour
             if (roadLine != RoadLine.RIGHT)
             {
                 roadLine++;
-
-                characterRigidbody.transform.position += new Vector3(4,0,0);
             }
         }
 
 
+    }
+
+    private void Move() 
+    {
+        rigidBody.position = new Vector3(positionX * (int)roadLine, 0, 0);
     }
 }
