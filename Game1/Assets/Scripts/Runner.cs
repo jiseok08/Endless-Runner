@@ -13,9 +13,11 @@ public class Runner : MonoBehaviour
 {
     [SerializeField] RoadLine roadLine;
 
+    Rigidbody characterRigidbody;
+
     void Start()
     {
-        
+        characterRigidbody = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -31,7 +33,7 @@ public class Runner : MonoBehaviour
             {
                 roadLine--;
 
-                
+                characterRigidbody.transform.position -= new Vector3(4, 0, 0);
             }
         }
 
@@ -40,6 +42,8 @@ public class Runner : MonoBehaviour
             if (roadLine != RoadLine.RIGHT)
             {
                 roadLine++;
+
+                characterRigidbody.transform.position += new Vector3(4,0,0);
             }
         }
 
