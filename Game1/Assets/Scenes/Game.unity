@@ -14,10 +14,10 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Fog: 1
+  m_FogColor: {r: 0.09411766, g: 0.45882356, b: 0.70980394, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.0125
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -412,7 +412,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 963194227}
-  m_PlaneDistance: 100
+  m_PlaneDistance: 200
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -509,11 +509,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ebcd6f57e03a2704cadfbbb5604c2370, type: 3}
---- !u!1 &398942387 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4102411884350158478, guid: ebcd6f57e03a2704cadfbbb5604c2370, type: 3}
-  m_PrefabInstance: {fileID: 398942386}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &398942388 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6449625674865445551, guid: ebcd6f57e03a2704cadfbbb5604c2370, type: 3}
@@ -640,10 +635,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ff3e843ff796dc4ca22703cdbb564bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  List: []
-  TrafficCone: {fileID: 398942387}
-  Barrier: {fileID: 1533469702}
-  OilBarrer: {fileID: 1784728899}
+  obstacles: []
+  prefab:
+  - {fileID: 4102411884350158478, guid: ebcd6f57e03a2704cadfbbb5604c2370, type: 3}
+  - {fileID: 3464678424639578290, guid: 26cce39f28abd9f43868c4f7c9597ac3, type: 3}
+  - {fileID: 3201414104365093040, guid: 091ecd9a7b96355469f443fb5bde6dbb, type: 3}
+  createCount: 5
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1430,11 +1427,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 091ecd9a7b96355469f443fb5bde6dbb, type: 3}
---- !u!1 &1533469702 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3201414104365093040, guid: 091ecd9a7b96355469f443fb5bde6dbb, type: 3}
-  m_PrefabInstance: {fileID: 1533469701}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1533469703 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3474307655671018594, guid: 091ecd9a7b96355469f443fb5bde6dbb, type: 3}
@@ -1591,11 +1583,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 26cce39f28abd9f43868c4f7c9597ac3, type: 3}
---- !u!1 &1784728899 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3464678424639578290, guid: 26cce39f28abd9f43868c4f7c9597ac3, type: 3}
-  m_PrefabInstance: {fileID: 1784728898}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1784728900 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1364899845466589203, guid: 26cce39f28abd9f43868c4f7c9597ac3, type: 3}
@@ -3038,7 +3025,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roadLine: 0
   rigidBody: {fileID: 0}
-  positionX: 0
+  positionX: 4
 --- !u!4 &3047851900123834218
 Transform:
   m_ObjectHideFlags: 0
