@@ -481,6 +481,51 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &492515564
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 492515566}
+  - component: {fileID: 492515565}
+  m_Layer: 0
+  m_Name: MouseManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &492515565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492515564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66d40b4a2d21b28499400391b9ba705d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  texture2D: {fileID: 0}
+--- !u!4 &492515566
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492515564}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.337826, y: 13.536797, z: 171.51941}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &609724221 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7901200363996923569, guid: 63663218e82a39a449202be480782743, type: 3}
@@ -562,12 +607,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ff3e843ff796dc4ca22703cdbb564bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obstacles: []
-  prefab:
-  - {fileID: 4102411884350158478, guid: ebcd6f57e03a2704cadfbbb5604c2370, type: 3}
-  - {fileID: 3464678424639578290, guid: 26cce39f28abd9f43868c4f7c9597ac3, type: 3}
-  - {fileID: 3201414104365093040, guid: 091ecd9a7b96355469f443fb5bde6dbb, type: 3}
+  random: 0
   createCount: 5
+  obstacles: []
+  obstacleNames:
+  - Barrier
+  - Oil Berrel
+  - Traffic Cone
   transforms:
   - {fileID: 1118240852}
   - {fileID: 1239893670}
@@ -726,7 +772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f910d1705b2cb184da5e09f0001f2e7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 5
   offset: 40
   roads:
   - {fileID: 776546005}
@@ -1580,7 +1626,7 @@ Transform:
   m_GameObject: {fileID: 1993625552}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.6165115, y: 4.460214, z: -6.2649326}
+  m_LocalPosition: {x: 0, y: 0, z: -6.26493}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4951,3 +4997,4 @@ SceneRoots:
   - {fileID: 391735700}
   - {fileID: 666125087}
   - {fileID: 1993625553}
+  - {fileID: 492515566}
