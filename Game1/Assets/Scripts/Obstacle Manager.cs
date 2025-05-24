@@ -15,7 +15,7 @@ public class ObstacleManager : MonoBehaviour
 
     [SerializeField] Transform [ ] transforms; 
 
-    void Start() // Start
+    void Start()
     {
         obstacles.Capacity = 10;
 
