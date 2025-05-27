@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
-    [SerializeField] float speed;
 
     public void Activate()
     {
@@ -13,6 +12,6 @@ public class Obstacle : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector3.up * speed *  Time.deltaTime);
+        transform.Translate(Vector3.up * SpeedManager.Instance.Speed *  Time.deltaTime);
     }
 }

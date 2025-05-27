@@ -342,6 +342,52 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &357484954
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 357484956}
+  - component: {fileID: 357484955}
+  m_Layer: 0
+  m_Name: Speed Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &357484955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357484954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 016037424fd124d4e9ac118553a3fa24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 30
+  LimitSpeed: 60
+--- !u!4 &357484956
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357484954}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.61942, y: 3.4744232, z: 188.52559}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &359774023
 GameObject:
   m_ObjectHideFlags: 0
@@ -943,7 +989,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f910d1705b2cb184da5e09f0001f2e7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
   offset: 40
   roads:
   - {fileID: 776546005}
@@ -1284,7 +1329,7 @@ MonoBehaviour:
   m_ShowCameraFrustum: 1
   m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 2
+  m_UpdateMethod: 1
   m_BlendUpdateMethod: 1
   m_DefaultBlend:
     m_Style: 1
@@ -3420,6 +3465,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roadLine: 0
   rigidBody: {fileID: 0}
+  speed: 0
   positionX: 4
 --- !u!4 &3047851900123834218
 Transform:
@@ -5423,3 +5469,4 @@ SceneRoots:
   - {fileID: 492515566}
   - {fileID: 1841845118}
   - {fileID: 827550595}
+  - {fileID: 357484956}
