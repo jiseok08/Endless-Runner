@@ -15,8 +15,6 @@ public class ObstacleManager : MonoBehaviour
 
     [SerializeField] Transform [ ] transforms;
 
-    [SerializeField] WaitForSeconds waitForSeconds = new WaitForSeconds(5);
-
     void Start()
     {
         obstacles.Capacity = 10;
@@ -85,7 +83,7 @@ public class ObstacleManager : MonoBehaviour
 
             obstacles[random].SetActive(true);
 
-            yield return waitForSeconds;
+            yield return CoroutineCache.WaitForSoconds(5.0f);
         }
     }
 }
