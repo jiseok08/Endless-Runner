@@ -13,7 +13,7 @@ public class Runner : MonoBehaviour
 {
     [SerializeField] RoadLine roadLine;
     [SerializeField] Rigidbody rigidBody;
-
+    [SerializeField] float speed;
     [SerializeField] float positionX = 0;
 
     private void Awake()
@@ -23,7 +23,7 @@ public class Runner : MonoBehaviour
 
     private void Start()
     {
-        
+
     }
     private void FixedUpdate()
     {
@@ -40,7 +40,7 @@ public class Runner : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            if(roadLine != RoadLine.LEFT)
+            if (roadLine != RoadLine.LEFT)
             {
                 roadLine--;
             }
@@ -57,8 +57,13 @@ public class Runner : MonoBehaviour
 
     }
 
-    private void Move() 
+    private void Move()
     {
         rigidBody.position = new Vector3(positionX * (int)roadLine, 0, 0);
     }
+
+    private void Lerp()
+        {
+            Vector3.Lerp()
+        }
 }
