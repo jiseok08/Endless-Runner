@@ -14,6 +14,12 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             instance = (T)FindAnyObjectByType(typeof(T));
         }
+        else
+        {
+            Destroy(gameObject);
+
+            return;
+        }
 
         DontDestroyOnLoad(instance.gameObject);
         

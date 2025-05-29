@@ -27,6 +27,6 @@ public class MouseManager : MonoBehaviour
     public void EnableMode()
     {
         Cursor.visible = true;
-        Cursor.lockState= CursorLockMode.Locked;
+        Cursor.lockState= CursorLockMode.None;
     }
 }
