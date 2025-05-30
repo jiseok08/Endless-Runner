@@ -18,7 +18,30 @@ public class RoadManager : MonoBehaviour
         }
     }
 
-    public void InitialilizePosition()
+    public void OnEnable()
+    {
+        State.Subscribe(Condition.START, Excute);
+    }
+
+    void Excute()
+    {
+        StartCoroutine(Coroutine());
+    }
+
+    IEnumerator Coroutine()
+    {
+        while (true)
+        {
+            for (int i = 0; i < roads.Count; i++)
+            {
+                roads[i].transform.Translate(Vector3.back * SpeedManager.Instance.Speed * Time.deltaTime);
+            }
+
+            yield return null;
+        }
+    }
+
+    public void InitializePosition()
     {
         GameObject newRoad = roads[0];
 
@@ -31,8 +54,8 @@ public class RoadManager : MonoBehaviour
         roads.Add(newRoad);
     }
 
-    public void Something()
+    public void OnDisable()
     {
-
+        State.UnSubscribe(Condition.START, Excute);
     }
 }

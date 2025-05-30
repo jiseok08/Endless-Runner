@@ -4,13 +4,30 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public void Execute()
+    [SerializeField] GameObject startButton;
+
+    private void OnEnable()
     {
-        Debug.Log("Execute");
+        State.Subscribe(Condition.START, DisableButton);
     }
+
+    public void DisableButton()
+    {
+        startButton.SetActive(false);
+    }
+
+    public void Excute()
+    {
+        State.Publish(Condition.START);
+    } 
 
     public void Resume()
     {
         Debug.Log("Resume");
+    }
+
+    public void OnDisable()
+    {
+        State.UnSubscribe(Condition.START, DisableButton);
     }
 }

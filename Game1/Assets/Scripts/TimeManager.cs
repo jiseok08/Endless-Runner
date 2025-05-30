@@ -18,6 +18,16 @@ public class TimeManager : MonoBehaviour
         StartCoroutine(Measure());
     }
 
+    private void OnEnable()
+    {
+        State.Subscribe(Condition.START, Excute);
+    }
+
+    void Excute()
+    {
+        StartCoroutine (Measure());
+    }
+
     public IEnumerator Measure()
     {
         while (true)
@@ -32,5 +42,10 @@ public class TimeManager : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    private void OnDisable()
+    {
+        State.UnSubscribe(Condition.START, Excute);
     }
 }
