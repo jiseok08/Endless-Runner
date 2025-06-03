@@ -13,11 +13,6 @@ public class TimeManager : MonoBehaviour
     [SerializeField] int second;
     [SerializeField] int millisecond;
 
-    public void Start()
-    {
-        StartCoroutine(Measure());
-    }
-
     private void OnEnable()
     {
         State.Subscribe(Condition.START, Excute);

@@ -9,11 +9,6 @@ public class SpeedManager : Singleton<SpeedManager>
 
     public float Speed { get { return speed; } }
 
-    void Start()
-    {
-        StartCoroutine(Increase());
-    }
-
     private void OnEnable()
     {
         State.Subscribe(Condition.START, Excute);

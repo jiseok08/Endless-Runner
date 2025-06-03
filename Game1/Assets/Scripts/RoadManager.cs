@@ -9,15 +9,6 @@ public class RoadManager : MonoBehaviour
     [SerializeField] float offset = 40.0f;
     [SerializeField] List<GameObject> roads;
 
-
-    void Update()
-    {
-        for (int i = 0; i < roads.Count; i++)
-        {
-            roads[i].transform.Translate(SpeedManager.Instance.Speed * Vector3.back * Time.deltaTime);
-        }
-    }
-
     public void OnEnable()
     {
         State.Subscribe(Condition.START, Excute);
