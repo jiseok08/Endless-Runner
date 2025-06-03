@@ -18,6 +18,7 @@ public class ObstacleManager : MonoBehaviour
     private void OnEnable()
     {
         State.Subscribe(Condition.START, Excute);
+        State.Subscribe(Condition.FINISH, Release);
     }
 
     void Awake()
@@ -25,6 +26,11 @@ public class ObstacleManager : MonoBehaviour
         obstacles.Capacity = 10;
 
         Create();
+    }
+
+    void Release()
+    {
+        StopAllCoroutines();
     }
 
     public void Create()
@@ -98,5 +104,6 @@ public class ObstacleManager : MonoBehaviour
     private void OnDisable()
     {
         State.UnSubscribe(Condition.START, Excute);
+        State.UnSubscribe(Condition.FINISH, Release);
     }
 }

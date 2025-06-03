@@ -9,14 +9,20 @@ public class RoadManager : MonoBehaviour
     [SerializeField] float offset = 40.0f;
     [SerializeField] List<GameObject> roads;
 
-    public void OnEnable()
+    private void OnEnable()
     {
         State.Subscribe(Condition.START, Excute);
+        State.Subscribe(Condition.FINISH, Release);
     }
 
     void Excute()
     {
         StartCoroutine(Coroutine());
+    }
+
+    void Release()
+    {
+        StopAllCoroutines();
     }
 
     IEnumerator Coroutine()
@@ -45,8 +51,9 @@ public class RoadManager : MonoBehaviour
         roads.Add(newRoad);
     }
 
-    public void OnDisable()
+    private void OnDisable()
     {
         State.UnSubscribe(Condition.START, Excute);
+        State.UnSubscribe(Condition.FINISH, Release);
     }
 }
