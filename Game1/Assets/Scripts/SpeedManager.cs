@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpeedManager : Singleton<SpeedManager>
 {
@@ -42,8 +43,15 @@ public class SpeedManager : Singleton<SpeedManager>
         }
     }
 
+    public void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    {
+        speed = 30;
+    }
+
     private void OnDisable()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
         State.UnSubscribe(Condition.START, Excute);
         State.UnSubscribe(Condition.FINISH, Release);
     }
