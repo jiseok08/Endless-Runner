@@ -19,6 +19,8 @@ public class SpeedManager : Singleton<SpeedManager>
     {
         initializeSpeed = speed;
 
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         State.Subscribe(Condition.START, Excute);
         State.Subscribe(Condition.FINISH, Release);
     }
