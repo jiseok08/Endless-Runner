@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -26,10 +25,12 @@ public class AudioManager : Singleton<AudioManager>
 
     public void ScenerySound(string name)
     {
-        sceneryAudioSource.PlayOneShot(Resources.Load<AudioClip>(name));
+        sceneryAudioSource.clip = Resources.Load<AudioClip>(name);
+
+        sceneryAudioSource.Play();
     }
 
-    public void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
         ScenerySound(scene.name);
     }
@@ -38,4 +39,5 @@ public class AudioManager : Singleton<AudioManager>
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+
 }
