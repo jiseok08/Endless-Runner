@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Obstacle : MonoBehaviour
+public class Obstacle : MonoBehaviour, Collidable
 {
-
     private void OnEnable()
     {
         State.Subscribe(Condition.FINISH, Release);

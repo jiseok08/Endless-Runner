@@ -13,9 +13,31 @@ public class Runner : MonoBehaviour
 {
     [SerializeField] RoadLine roadLine;
     [SerializeField] Rigidbody rigidBody;
-
     [SerializeField] Animator animator;
-    [SerializeField] float positionX = 0;
+
+    [SerializeField] WaitForSeconds jumpCooldown;  
+    [SerializeField] float positionX;
+    [SerializeField] float jumpPower;
+    
+    bool canJump = true;
+    bool startReady = false;
+
+    private IEnumerator Start()
+    {
+        while (SpeedManager.Instance == null)
+        {
+            yield return null;
+        }
+
+        ConfigLoader.Load();
+
+        var c = ConfigLoader.Config.runner;
+        positionX = c.positionX;
+        jumpPower = c.jumpPower;
+        jumpCooldown = new WaitForSeconds(c.jumpCooldown);
+
+        startReady = true;
+    }
 
     private void Awake()
     {
@@ -23,18 +45,23 @@ public class Runner : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
     }
 
-    private void OnEnable()
+    private void OnTriggerEnter(Collider other)
     {
-        State.Subscribe(Condition.FINISH, Die);
-        State.Subscribe(Condition.FINISH, Release);
+        Obstacle obstacle = other.GetComponent<Obstacle>();
 
-        State.Subscribe(Condition.START, InputSystem);
-        State.Subscribe(Condition.START, StateTransition);
+        if (obstacle != null)
+        {
+            State.Publish(Condition.FINISH);
+        }
     }
 
-    void Release()
+    private void OnEnable()
     {
-        StopAllCoroutines();
+        State.Subscribe(Condition.START, InputSystem);
+        State.Subscribe(Condition.START, StateTransition);
+
+        State.Subscribe(Condition.FINISH, Die);
+        State.Subscribe(Condition.FINISH, Release);
     }
 
     public void InputSystem()
@@ -42,9 +69,28 @@ public class Runner : MonoBehaviour
         StartCoroutine(Coroutin());
     }
 
+    void Release()
+    {
+        StopAllCoroutines();
+    }
+
     private void FixedUpdate()
     {
+        if (!startReady) return;
         Move();
+    }
+
+
+    IEnumerator Jump()
+    {
+        canJump = false;
+
+        animator.Play("Jump");
+        rigidBody.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+
+        yield return jumpCooldown;
+
+        canJump = true;
     }
 
     IEnumerator Coroutin()
@@ -56,7 +102,6 @@ public class Runner : MonoBehaviour
                 if (roadLine != RoadLine.LEFT)
                 {
                     roadLine--;
-
                     animator.Play("Left Avoid");
                 }
             }
@@ -66,9 +111,13 @@ public class Runner : MonoBehaviour
                 if (roadLine != RoadLine.RIGHT)
                 {
                     roadLine++;
-
                     animator.Play("Right Avoid");
                 }
+            }
+
+            if (Input.GetKeyDown(KeyCode.UpArrow) && canJump)
+            {
+                StartCoroutine(Jump());
             }
 
             yield return null;
@@ -77,24 +126,26 @@ public class Runner : MonoBehaviour
 
     private void Move()
     {
-        rigidBody.position = Vector3.Lerp
-            (
-            rigidBody.position,
-            new Vector3(positionX * (int)roadLine, 0, 0),
-            SpeedManager.Instance.Speed * Time.deltaTime
-            );              
+        var pos = rigidBody.position;
+
+        float targetX = positionX * (int)roadLine;
+
+        Vector3 target = new Vector3(targetX, pos.y, pos.z);
+
+        rigidBody.MovePosition(
+            Vector3.Lerp(
+                pos,
+                target,
+                SpeedManager.Instance.Speed * Time.fixedDeltaTime
+            )
+        );
     }
+
 
     void Die()
     {
         animator.Play("Die");
-
         AudioManager.Instance.Listener("Conflict");
-    }
-
-    public void Synchronize()
-    {
-        animator.speed = SpeedManager.Instance.Speed / SpeedManager.Instance.InitializeSpeed;
     }
 
     public void StateTransition()
@@ -102,14 +153,9 @@ public class Runner : MonoBehaviour
         animator.SetTrigger("Start");
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void Synchronize()
     {
-        Obstacle obstacle = other.GetComponent<Obstacle>();
-
-        if (obstacle != null)
-        {
-            State.Publish(Condition.FINISH);
-        }
+        animator.speed = SpeedManager.Instance.Speed / SpeedManager.Instance.InitializeSpeed;
     }
 
     private void OnDisable()

@@ -13,6 +13,22 @@ public class TimeManager : MonoBehaviour
     [SerializeField] int second;
     [SerializeField] int millisecond;
 
+    [SerializeField] static TimeManager instance;
+
+    public static TimeManager Instance { get { return instance; } }
+
+    private void Awake()
+    {
+        if (instance == null) 
+        {
+            instance = this;
+        }
+        else 
+        {
+            Destroy(gameObject); 
+        }
+    }
+
     private void OnEnable()
     {
         State.Subscribe(Condition.START, Excute);

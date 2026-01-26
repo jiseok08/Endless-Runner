@@ -1,0 +1,24 @@
+{
+  "runner": {
+    "jumpCooldown": 2.0,
+    "positionX": 4.0,
+    "jumpPower": 7.5
+  },
+  "SpeedManager": {
+    "startSpeed": 30.0,
+    "limitSpeed": 50.0,
+    "increaseSpeed": 2.5,
+    "increaseTime": 5.33
+  },
+  "ObstacleManager": {
+    "startCycle": 5.0,
+    "minCycle": 3.0,
+    "cycleDecrease": 1.0,
+    "createCount": 15,
+    "tripleProb": 3,
+    "standardSec": 20
+  },
+  "BonusZone": {
+    "bonusScore": 100
+  }
+}

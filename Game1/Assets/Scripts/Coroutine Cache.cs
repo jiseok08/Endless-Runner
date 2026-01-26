@@ -6,7 +6,7 @@ public class CoroutineCache
 {
     static Dictionary<float, WaitForSeconds> dictionary = new Dictionary<float, WaitForSeconds>();
  
-    public static WaitForSeconds WaitForSoconds(float time)
+    public static WaitForSeconds WaitForSeconds(float time)
     {
         WaitForSeconds waitForseconds;
 
