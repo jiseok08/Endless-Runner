@@ -54,7 +54,7 @@ public class ScoreManager : MonoBehaviour
             highScoreText.text = string.Format("High Score : " + highScore);
 
             PlayerPrefs.SetInt("HighScore", highScore);
-            PlayerPrefs.Save();   // 즉시 저장
+            PlayerPrefs.Save();   
         }
     }
 
@@ -70,7 +70,7 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    public void Bonus(int bonus)
+    public void AddScore(int bonus)
     {
         score += bonus;
 

@@ -1,4 +1,4 @@
-﻿Shader "Custom/Suface"
+﻿Shader "Custom/Surface"
 {
      Properties
     {
@@ -27,7 +27,7 @@
             worldSpace.xyz -= _WorldSpaceCameraPos.xyz;
 
             float offset = (worldSpace.z * worldSpace.z) * -_Curvature;
-            float3 offsetWorld = float3(offset, 0.0f, 0.0f); // YÃà ÆíÂ÷ Á¦°Å
+            float3 offsetWorld = float3(offset, 0.0f, 0.0f); 
 
             v.vertex += mul(unity_WorldToObject, float4(offsetWorld, 0.0f));
         }

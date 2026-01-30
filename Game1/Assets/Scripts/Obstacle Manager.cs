@@ -10,24 +10,22 @@ public class ObstacleManager : MonoBehaviour
     [SerializeField] float cycleDecrease;
 
     [SerializeField] int createCount;
-
     [SerializeField] int tripleProb;
-
     [SerializeField] int standardSec;
 
-    [SerializeField] List<GameObject> obstacles;
-
+    [SerializeField] string longObstacleName;
     [SerializeField] string [ ] obstacleNames;
 
     [SerializeField] Transform [ ] transforms;
 
     float cycle;
-
     float nextTime;
 
     int stepCount;
-
     int random = 0;
+
+    List<GameObject> obstacles = new List<GameObject>();
+    List<GameObject> longObstacles = new List<GameObject>();
 
     void Awake()
     {
@@ -39,16 +37,17 @@ public class ObstacleManager : MonoBehaviour
         cycleDecrease = c.cycleDecrease;
 
         createCount = c.createCount;
+        obstacles.Capacity = c.obstacles_Capacity;
+        longObstacles.Capacity = c.longObstacles_Capacity;
         tripleProb = c.tripleProb;
         standardSec = c.standardSec;
+        
+        longObstacleName = c.longObstacleName;
+        obstacleNames = c.obstacleNames;
 
         cycle = startCycle;
         nextTime = Time.time + standardSec;
         stepCount = 0;
-
-        obstacles.Capacity = createCount;
-
-        First();
     }
     
 
@@ -63,7 +62,7 @@ public class ObstacleManager : MonoBehaviour
         StopAllCoroutines();
     }
 
-    public void First()
+    private void Start()
     {
         for (int i = 0; i < createCount; i++)
         {
@@ -77,11 +76,11 @@ public class ObstacleManager : MonoBehaviour
         }
     }
 
-    bool ExamineActive()
+    bool ExamineActive(List<GameObject> list)
     {
-        for (int i = 0; i < obstacles.Count;i++)
+        for (int i = 0; i < list.Count;i++)
         {
-            if (obstacles[i].activeSelf ==  false)
+            if (list[i].activeSelf ==  false)
             {
                 return false;
             }
@@ -101,7 +100,7 @@ public class ObstacleManager : MonoBehaviour
         {
             // 현재 리스트에 있는 모든 게임 오브젝트가 활성화되어 있는지 확인합니다.
 
-            if (ExamineActive())
+            if (ExamineActive(obstacles))
             {
                 // 모든 게임 오브젝트가 활성화되어 있다면 게임 오브젝트를 새로
                 // 생성한 다음 obstacles 리스트에 넣어줍니다.
@@ -112,6 +111,10 @@ public class ObstacleManager : MonoBehaviour
                 clone.SetActive(false);
 
                 obstacles.Add(clone);
+
+                obstacleIndex = obstacles.Count - 1;
+
+                break;
             }
 
             // 현재 인덱스에 있는 게임 오브젝트가 활성화되어 있으면
@@ -151,11 +154,34 @@ public class ObstacleManager : MonoBehaviour
 
                 if (stepCount >= 2) // 3개씩 나오는 패턴 등장 
                 {
-                    int pattern = Random.Range(0, tripleProb); // 3/1 확률로 등장
-
-                    if (pattern == 0)
+                    if (Random.Range(0, tripleProb) == 0)
                     {
-                        Create((random + 2) % obstacles.Count, (positionIndex + 2) % transforms.Length);
+                        if (ExamineActive(longObstacles)) // 비활성화된 객체 탐색
+                        {
+                            GameObject clone = Instantiate(Resources.Load<GameObject>(longObstacleName), transform); // 장애물 생성
+
+                            clone.name = clone.name.Replace("(Clone)", "");
+
+                            longObstacles.Add(clone); // 리스트에 저장
+
+                            clone.transform.position = transforms[(positionIndex + 2) % transforms.Length].position;
+
+                            clone.SetActive(true);
+                        }
+                        else // 비활성화된 장애물이 있다면
+                        {
+                            for (int i = 0; i < longObstacles.Count; i++)
+                            {
+                                if (longObstacles[i].activeSelf == false) // longObstacles를 탐색하여 비활성화된 장애물 활성화
+                                {
+                                    longObstacles[i].transform.position = transforms[(positionIndex + 2) % transforms.Length].position;
+
+                                    longObstacles[i].SetActive(true);
+
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }

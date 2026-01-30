@@ -18,31 +18,20 @@ public class Runner : MonoBehaviour
     [SerializeField] WaitForSeconds jumpCooldown;  
     [SerializeField] float positionX;
     [SerializeField] float jumpPower;
-    
+
     bool canJump = true;
-    bool startReady = false;
-
-    private IEnumerator Start()
-    {
-        while (SpeedManager.Instance == null)
-        {
-            yield return null;
-        }
-
-        ConfigLoader.Load();
-
-        var c = ConfigLoader.Config.runner;
-        positionX = c.positionX;
-        jumpPower = c.jumpPower;
-        jumpCooldown = new WaitForSeconds(c.jumpCooldown);
-
-        startReady = true;
-    }
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody>();
+
+        ConfigLoader.Load();
+
+        var c = ConfigLoader.Config.Runner;
+        positionX = c.positionX;
+        jumpPower = c.jumpPower;
+        jumpCooldown = new WaitForSeconds(c.jumpCooldown);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -76,7 +65,6 @@ public class Runner : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!startReady) return;
         Move();
     }
 

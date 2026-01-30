@@ -357,6 +357,7 @@
 "Assets/Resources/Config/ConfigLoader.cs"
 "Assets/Resources/Config/GameConfig.cs"
 "Assets/Scripts/AudioManager.cs"
+"Assets/Scripts/Bonus Manager.cs"
 "Assets/Scripts/BonusZone.cs"
 "Assets/Scripts/CinemachineCamera.cs"
 "Assets/Scripts/Coroutine Cache.cs"
