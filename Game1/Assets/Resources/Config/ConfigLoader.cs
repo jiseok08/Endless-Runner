@@ -2,20 +2,24 @@ using UnityEngine;
 
 public static class ConfigLoader
 {
-    public static GameConfig Config { get; private set; }
+    private const string ConfigPath = "Config/balance_config";
 
-    public static void Load()
+    public static GameConfig Load()
     {
-        if (Config != null) return;
-
-        TextAsset json = Resources.Load<TextAsset>("Config/balance_config");
+        TextAsset json = Resources.Load<TextAsset>(ConfigPath);
         if (json == null)
         {
-            Debug.LogError("Resources/Config/balance_config.json 못 찾음");
-            return;
+            Debug.LogError($"Config 파일을 찾지 못함: Resources/{ConfigPath}");
+            return null;
         }
 
-        Config = JsonUtility.FromJson<GameConfig>(json.text);
-        if (Config == null) Debug.LogError("JSON 파싱 실패");
+        GameConfig config = JsonUtility.FromJson<GameConfig>(json.text);
+        if (config == null)
+        {
+            Debug.LogError($"Config JSON 파싱 실패: {ConfigPath}");
+            return null;
+        }
+
+        return config;
     }
 }

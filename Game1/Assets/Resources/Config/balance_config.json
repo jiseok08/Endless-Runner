@@ -1,31 +1,33 @@
 {
-  "Runner": {
-    "jumpCooldown": 2.0,
-    "jumpPower": 7.5,
-    "positionX": 4.0
-  },
-  "SpeedManager": {
-    "startSpeed": 30.0,
-    "limitSpeed": 50.0,
-    "increaseSpeed": 2.5,
-    "increaseTime": 7.0
-  },
-  "ObstacleManager": {
-    "startCycle": 4.0,
-    "minCycle": 2.5,
-    "cycleDecrease": 0.5,
-    "createCount": 5,
-    "obstacles_Capacity": 15,
-    "tripleProb": 3,
-    "standardSec": 20,
-    "longObstacles_Capacity": 5,
-    "obstacleNames": [ "prefabs/Barrier", "prefabs/Oil Berrel", "prefabs/Traffic Cone" ],
-    "longObstacleName": "prefabs/Long Barrier"
-  },
-  "BonusManager": {
-    "stdScore": 10,
-    "maxCombo": 5,
-    "startComboTime":5,
-    "textHoldingTime": 3
-  }
+    "runner": {
+        "jumpCooldown": 2.0,
+        "jumpPower": 7.5,
+        "positionX": 4.0
+    },
+    "speedManager": {
+        "startSpeed": 30.0,
+        "limitSpeed": 50.0,
+        "increaseSpeed": 2.5,
+        "increaseTime": 7.0
+    },
+    "obstacleManager": {
+        "startCycle": 4.0,
+        "minCycle": 2.5,
+        "cycleDecrease": 0.5,
+        "createCount": 5,
+        "obstacleCapacity": 15,
+        "longObstacleCapacity": 5,
+        "tripleProbability": 3,
+        "standardSecond": 20,
+        "longObstacleIndex": 0,
+        "longObstacleName": "prefabs/Long Barrier",
+        "obstacleNames": [ "prefabs/Barrier", "prefabs/Oil Berrel", "prefabs/Traffic Cone" ]
+    },
+    "bonusManager": {
+        "stdScore_REMOVE": 0,
+        "standardScore": 10,
+        "maxCombo": 5,
+        "startComboTime": 5,
+        "textHoldingTime": 3
+    }
 }

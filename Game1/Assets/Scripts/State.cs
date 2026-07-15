@@ -1,61 +1,30 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.Events;
 
 public enum Condition
 { 
     START,
     FINISH,
-    RESUME
+    RESET
 }
 
-
-public class State
+public static class State
 {
-    private static Action start;
-    private static Action finish;
-    private static Action resume;
+    private static readonly Dictionary<Condition, Action> events = new();
 
-    public static void Subscribe(Condition condition, Action unityAction)
+    public static void Subscribe(Condition condition, Action action)
     {
-
-        switch (condition)
-        {
-            case Condition.START: start += unityAction;
-                break;
-            case Condition.FINISH: finish += unityAction;
-                break;
-            case Condition.RESUME: resume += unityAction;
-                break;
-        }
+        if (events.ContainsKey(condition)) events[condition] += action;
+        else events[condition] = action;
     }
 
-    public static void UnSubscribe(Condition condition, Action unityAction)
+    public static void UnSubscribe(Condition condition, Action action)
     {
-        switch (condition)
-        {
-            case Condition.START: start -= unityAction;
-                break;
-            case Condition.FINISH:finish -= unityAction;
-                break;
-            case Condition.RESUME:resume -= unityAction;
-                break;
-        }
+        if (events.ContainsKey(condition)) events[condition] -= action;
     }
 
     public static void Publish(Condition condition)
     {
-        switch (condition)
-        {
-            case Condition.START: start?.Invoke();
-                break;
-            case Condition.FINISH: finish?.Invoke();
-                break;
-            case Condition.RESUME: resume?.Invoke();
-                break;
-        }
+        if (events.TryGetValue(condition, out var action)) action?.Invoke();
     }
 }

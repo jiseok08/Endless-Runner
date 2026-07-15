@@ -21,14 +21,13 @@ public class Runner : MonoBehaviour
 
     bool canJump = true;
 
-    private void Awake()
+    private void Start()
     {
         animator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody>();
 
-        ConfigLoader.Load();
+        var c = ConfigManager.Instance.Config.runner;
 
-        var c = ConfigLoader.Config.Runner;
         positionX = c.positionX;
         jumpPower = c.jumpPower;
         jumpCooldown = new WaitForSeconds(c.jumpCooldown);
@@ -46,6 +45,7 @@ public class Runner : MonoBehaviour
 
     private void OnEnable()
     {
+        State.Subscribe(Condition.RESET, ResetRunner);
         State.Subscribe(Condition.START, InputSystem);
         State.Subscribe(Condition.START, StateTransition);
 
@@ -68,6 +68,16 @@ public class Runner : MonoBehaviour
         Move();
     }
 
+    void ResetRunner()
+    {
+        StopAllCoroutines();
+
+        roadLine = RoadLine.MIDDLE;
+        canJump = true;
+        rigidBody.position = new Vector3(0f, rigidBody.position.y, rigidBody.position.z);
+
+        animator.Play("Idle");
+    }
 
     IEnumerator Jump()
     {
@@ -148,6 +158,7 @@ public class Runner : MonoBehaviour
 
     private void OnDisable()
     {
+        State.UnSubscribe(Condition.RESET, ResetRunner);
         State.UnSubscribe(Condition.FINISH, Die);
         State.UnSubscribe(Condition.FINISH, Release);
 

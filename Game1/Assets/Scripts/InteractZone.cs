@@ -10,7 +10,7 @@ public class InteractZone : MonoBehaviour
 
         if (collidable != null)
         {
-            collidable.Activate();
+            collidable.OnInteract();
         }
     }
 }

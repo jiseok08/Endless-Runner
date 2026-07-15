@@ -1,31 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Obstacle : MonoBehaviour, Collidable
 {
+    bool canMove;
+
     private void OnEnable()
     {
-        State.Subscribe(Condition.FINISH, Release);
+        canMove = true;
+        State.Subscribe(Condition.FINISH, ResetObstacle);
     }
 
-    public void Activate()
+    public void OnInteract()
     {
         gameObject.SetActive(false);
     }
 
-    void Release()
+    public void ResetObstacle()
     {
-        Destroy(this);
+        canMove = false;
     }
 
     void Update()
     {
-        transform.Translate(Vector3.up * SpeedManager.Instance.Speed *  Time.deltaTime);
+        if (canMove)
+        {
+            transform.Translate(Vector3.up * SpeedManager.Instance.Speed * Time.deltaTime);
+        }
     }
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.FINISH, Release);
+        State.UnSubscribe(Condition.FINISH, ResetObstacle);
     }
 }

@@ -7,27 +7,28 @@ public class CinemachineCamera : MonoBehaviour
 {
     [SerializeField] Runner runner;
 
-    [SerializeField] CinemachineVirtualCamera cinemachineVirtualCamera;
+    [SerializeField] CinemachineVirtualCamera aliveCamera;
+    [SerializeField] CinemachineVirtualCamera deathCamera;
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.FINISH, Follow);
+        State.Subscribe(Condition.RESET, CameraReset);
         State.Subscribe(Condition.FINISH, Observe);
     }
 
-    void Follow()
+    void CameraReset()
     {
-        cinemachineVirtualCamera.Follow = runner.transform;
+        deathCamera.Priority = 0;
     }
 
-    public void Observe()
+    void Observe()
     {
-        cinemachineVirtualCamera.LookAt = runner.transform;
+        deathCamera.Priority = 20;
     }
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.FINISH, Follow);
+        State.UnSubscribe(Condition.RESET, CameraReset);
         State.UnSubscribe(Condition.FINISH, Observe);
     }
 }
