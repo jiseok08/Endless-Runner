@@ -1,23 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
-using UnityEditor;
 using UnityEngine;
 
 public class RoadManager : MonoBehaviour
 {
     [SerializeField] float offset = 40.0f;
-    [SerializeField] List<GameObject> roads;
+    [SerializeField] List<Road> roads;
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.START, Excute);
+        State.Subscribe(Condition.START, Execute);
         State.Subscribe(Condition.FINISH, Release);
+
+        for (int i = 0; i < roads.Count; i++)
+        {
+            roads[i].AddCallback(InitializePosition);
+        }
     }
 
-    void Excute()
+    void Execute()
     {
-        StartCoroutine(Coroutine());
+        StartCoroutine(MoveRoutine());
     }
 
     void Release()
@@ -25,7 +28,7 @@ public class RoadManager : MonoBehaviour
         StopAllCoroutines();
     }
 
-    IEnumerator Coroutine()
+    IEnumerator MoveRoutine()
     {
         while (true)
         {
@@ -40,9 +43,9 @@ public class RoadManager : MonoBehaviour
 
     public void InitializePosition()
     {
-        GameObject newRoad = roads[0];
+        Road newRoad = roads[0];
 
-        roads.Remove(newRoad);
+        roads.RemoveAt(0);
 
         float newZ = roads[roads.Count - 1].transform.position.z + offset;
     
@@ -53,7 +56,12 @@ public class RoadManager : MonoBehaviour
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.START, Excute);
+        State.UnSubscribe(Condition.START, Execute);
         State.UnSubscribe(Condition.FINISH, Release);
+
+        for (int i = 0; i < roads.Count; i++)
+        {
+            roads[i].RemoveCallback(InitializePosition);
+        }
     }
 }
