@@ -23,7 +23,7 @@ public class Runner : MonoBehaviour
 
     WaitForSeconds jumpCooldown;  
 
-    public bool canJump = true;
+    private bool isJumping = false;
 
     private void Start()
     {
@@ -59,7 +59,7 @@ public class Runner : MonoBehaviour
 
     public void InputSystem()
     {
-        StartCoroutine(Coroutin());
+        StartCoroutine(Coroutine());
     }
 
     void Release()
@@ -77,21 +77,32 @@ public class Runner : MonoBehaviour
         StopAllCoroutines();
 
         roadLine = RoadLine.MIDDLE;
-        canJump = true;
+        isJumping = false;
         rigidBody.position = new Vector3(0f, rigidBody.position.y, rigidBody.position.z);
 
         animator.Play("Idle");
     }
 
+    private bool IsGrounded()
+    {
+        return Physics.Raycast(rayPoint.position, Vector3.down, groundCheckDistance, groundLayer);
+    }
+
     IEnumerator Jump()
     {
+        isJumping = true;
+
         animator.Play("Jump");
         rigidBody.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
 
-        yield return jumpCooldown;
+        yield return new WaitUntil(() => !IsGrounded());
+
+        yield return new WaitUntil(IsGrounded);
+
+        isJumping = false;
     }
 
-    IEnumerator Coroutin()
+    IEnumerator Coroutine()
     {
         while (true)
         {
@@ -113,7 +124,7 @@ public class Runner : MonoBehaviour
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.UpArrow) && canJump)
+            if (Input.GetKeyDown(KeyCode.UpArrow) && !isJumping && !IsGrounded())
             {
                 StartCoroutine(Jump());
             }
