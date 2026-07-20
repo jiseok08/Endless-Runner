@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-// ������ �����ɽ�Ʈ�� üũ�ϰ� ���� ����� ����ȭ
+// 점프 연타하면 버그남
 public enum RoadLine
 {
     LEFT = -1,
@@ -21,9 +21,9 @@ public class Runner : MonoBehaviour
     [SerializeField] float positionX;
     [SerializeField] float jumpPower;
 
-    WaitForSeconds jumpCooldown;  
+    [SerializeField] bool isJumping = false;
 
-    private bool isJumping = false;
+    float jumpHoldPoint = 0.4f;
 
     private void Start()
     {
@@ -34,7 +34,6 @@ public class Runner : MonoBehaviour
 
         positionX = c.positionX;
         jumpPower = c.jumpPower;
-        jumpCooldown = new WaitForSeconds(c.jumpCooldown);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -93,11 +92,30 @@ public class Runner : MonoBehaviour
         isJumping = true;
 
         animator.Play("Jump");
+
         rigidBody.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
 
-        yield return new WaitUntil(() => !IsGrounded());
+        yield return new WaitUntil(() => // 체공 시작
+        {
+            AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0); // 현재 진행중인 애니메이션 가져오기
 
-        yield return new WaitUntil(IsGrounded);
+            return state.IsName("Jump") && state.normalizedTime  >= jumpHoldPoint; // 진행시간이 기준 시간 이상이라면 return
+        });
+
+        animator.speed = 0.2f; // 속도를 늦춰 착지 시간과 동기화
+
+        yield return new WaitUntil(() => rigidBody.linearVelocity.y <= 0f && IsGrounded()); // 내려오는지 확인
+
+        yield return new WaitUntil(IsGrounded); // 땅에 닿는지 확인
+
+        animator.speed = 1; // 속도 정상화
+
+        yield return new WaitUntil(() =>
+        {
+            AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+
+            return !state.IsName("Jump");
+        });
 
         isJumping = false;
     }
@@ -111,7 +129,11 @@ public class Runner : MonoBehaviour
                 if (roadLine != RoadLine.LEFT)
                 {
                     roadLine--;
-                    animator.Play("Left Avoid");
+
+                    if (isJumping == false)
+                    {
+                        animator.Play("Left Avoid");
+                    } 
                 }
             }
 
@@ -120,7 +142,11 @@ public class Runner : MonoBehaviour
                 if (roadLine != RoadLine.RIGHT)
                 {
                     roadLine++;
-                    animator.Play("Right Avoid");
+
+                    if (isJumping == false)
+                    {
+                        animator.Play("Right Avoid");
+                    }
                 }
             }
 

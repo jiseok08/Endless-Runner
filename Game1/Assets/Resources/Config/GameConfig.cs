@@ -12,7 +12,6 @@ public class GameConfig
 [Serializable]
 public class RunnerConfig
 {
-    public float jumpCooldown;   // 점프 쿨다운(초)
     public float positionX;      // 러너 고정 X 위치
     public float jumpPower;      // 점프 힘
 }

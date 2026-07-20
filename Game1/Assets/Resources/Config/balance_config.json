@@ -1,6 +1,5 @@
 {
     "runner": {
-        "jumpCooldown": 0.5,
         "jumpPower": 7.5,
         "positionX": 4.0
     },
