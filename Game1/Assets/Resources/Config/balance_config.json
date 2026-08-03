@@ -14,8 +14,6 @@
         "minCycle": 2.5,
         "cycleDecrease": 0.5,
         "createCount": 5,
-        "obstacleCapacity": 15,
-        "longObstacleCapacity": 5,
         "tripleProbability": 3,
         "standardSecond": 20,
         "longObstacleIndex": 0,

@@ -1,23 +1,40 @@
 using UnityEngine;
 
-public class Obstacle : MonoBehaviour, Collidable
-{
+public class Obstacle : MonoBehaviour, ICollidable
+{ 
+    private ObstacleType type;
+    private IObstacleReturner obstacleReturner;
+
     bool canMove;
+    bool isInPool;
+
+    public void Initialize(IObstacleReturner obstacleReturner, ObstacleType type)
+    {
+        this.obstacleReturner = obstacleReturner;
+        this.type = type;
+    }
 
     private void OnEnable()
     {
         canMove = true;
-        State.Subscribe(Condition.FINISH, ResetObstacle);
+        isInPool = false;
+        State.Subscribe(Condition.RESET, ResetObstacle);
+        State.Subscribe(Condition.FINISH, EndObstacle);
     }
 
     public void OnInteract()
     {
-        gameObject.SetActive(false);
+        ReturnToPool();
     }
 
-    public void ResetObstacle()
+    private void EndObstacle()
     {
         canMove = false;
+    }
+
+    private void ResetObstacle()
+    {
+        ReturnToPool();
     }
 
     void Update()
@@ -28,8 +45,22 @@ public class Obstacle : MonoBehaviour, Collidable
         }
     }
 
+    private void ReturnToPool()
+    {
+        if (isInPool)
+        {
+            return;
+        }
+
+        isInPool = true;
+        canMove = false;
+
+        obstacleReturner.ReturnToPool(gameObject, type);
+    }
+
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.FINISH, ResetObstacle);
+        State.UnSubscribe(Condition.RESET, ResetObstacle);
+        State.UnSubscribe(Condition.FINISH, EndObstacle);
     }
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Road : MonoBehaviour, Collidable
+public class Road : MonoBehaviour, ICollidable
 {
     [SerializeField] UnityEvent callback = new UnityEvent();
 

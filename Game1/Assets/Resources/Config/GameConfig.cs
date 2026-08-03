@@ -32,8 +32,6 @@ public class ObstacleManagerConfig
     public float minCycle;              // 최소 생성 주기(초)
     public float cycleDecrease;         // 주기 감소량
     public int createCount;             // 한 번에 생성 개수
-    public int obstacleCapacity;        // 일반 장애물 풀 용량
-    public int longObstacleCapacity;    // 긴 장애물 풀 용량
     public int tripleProbability;       // 3연속 생성 확률(%)
     public int standardSecond;          // 기준 시간(초)
     public int longObstacleIndex;       // 긴 장애물 인덱스

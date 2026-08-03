@@ -1,4 +1,4 @@
-public interface Collidable
+public interface ICollidable
 {
     public void OnInteract();
 }

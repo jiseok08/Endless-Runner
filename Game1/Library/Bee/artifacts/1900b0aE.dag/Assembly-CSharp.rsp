@@ -401,6 +401,7 @@
 -r:"Library/PackageCache/com.unity.visualscripting@191c0d7e3b69/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Cinemachine.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/com.unity.cinemachine.editor.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.2D.Sprite.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.EditorCoroutines.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.Multiplayer.Center.Common.ref.dll"
@@ -444,7 +445,8 @@
 "Assets/Scripts/Manager/GameManager.cs"
 "Assets/Scripts/Manager/InterfaceManager.cs"
 "Assets/Scripts/Manager/MouseManager.cs"
-"Assets/Scripts/Manager/ObstacleManager.cs"
+"Assets/Scripts/Manager/Obstacle Manager/ObstacleManager.cs"
+"Assets/Scripts/Manager/Obstacle Manager/ObstaclePool.cs"
 "Assets/Scripts/Manager/RoadManager.cs"
 "Assets/Scripts/Manager/SceneryManager.cs"
 "Assets/Scripts/Manager/ScoreManager.cs"
@@ -454,8 +456,8 @@
 "Assets/Scripts/Obstacle/BonusZone.cs"
 "Assets/Scripts/Obstacle/Obstacle.cs"
 "Assets/Scripts/Player/Runner.cs"
+"Assets/Scripts/Player/RunnerMovement.cs"
 "Assets/Scripts/World/InteractZone.cs"
-"Assets/Scripts/World/JumpZone.cs"
 "Assets/Scripts/World/Road.cs"
 -langversion:9.0
 /deterministic

@@ -1,3 +1,4 @@
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public static class ConfigLoader
@@ -9,14 +10,14 @@ public static class ConfigLoader
         TextAsset json = Resources.Load<TextAsset>(ConfigPath);
         if (json == null)
         {
-            Debug.LogError($"Config 파일을 찾지 못함: Resources/{ConfigPath}");
+            Debug.LogError("json == null (Config/balance_config)");
             return null;
         }
 
         GameConfig config = JsonUtility.FromJson<GameConfig>(json.text);
         if (config == null)
         {
-            Debug.LogError($"Config JSON 파싱 실패: {ConfigPath}");
+            Debug.LogError("config == null(Config / balance_config)");
             return null;
         }
 

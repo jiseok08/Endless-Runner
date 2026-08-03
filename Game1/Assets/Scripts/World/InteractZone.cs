@@ -6,7 +6,7 @@ public class InteractZone : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        Collidable collidable = other.GetComponent<Collidable>();
+        ICollidable collidable = other.GetComponent<ICollidable>();
 
         if (collidable != null)
         {
