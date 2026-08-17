@@ -39,6 +39,13 @@ public class RunnerMovement : MonoBehaviour
         jumpPower = c.jumpPower;
     }
 
+    private void OnEnable()
+    {
+        State.Subscribe(Condition.START, StateTransition);
+
+        State.Subscribe(Condition.FINISH, Die);
+    }
+
     private void FixedUpdate()
     {
         Move();
@@ -56,6 +63,7 @@ public class RunnerMovement : MonoBehaviour
             }
         }
     }
+
     public void RightMove()
     {
         if (roadLine != RoadLine.RIGHT)
@@ -68,6 +76,22 @@ public class RunnerMovement : MonoBehaviour
             }
         }
     }
+
+    private bool IsGrounded()
+    {
+        return Physics.Raycast(rayPoint.position, Vector3.down, groundCheckDistance, groundLayer);
+    }
+
+    public void TryJump()
+    {
+        if(isJumping || !IsGrounded())
+        {
+            return;
+        }
+
+        StartCoroutine(Jump());
+    }
+
     private void Move()
     {
         var pos = rigidBody.position;
@@ -78,19 +102,7 @@ public class RunnerMovement : MonoBehaviour
 
         rigidBody.MovePosition(Vector3.Lerp(pos, target, SpeedManager.Instance.Speed * Time.fixedDeltaTime));
     }
-    private bool IsGrounded()
-    {
-        return Physics.Raycast(rayPoint.position, Vector3.down, groundCheckDistance, groundLayer);
-    }
-    public void TryJump()
-    {
-        if(isJumping || !IsGrounded())
-        {
-            return;
-        }
 
-        StartCoroutine(Jump());
-    }
     IEnumerator Jump()
     {
         isJumping = true;
@@ -112,7 +124,7 @@ public class RunnerMovement : MonoBehaviour
 
         yield return new WaitUntil(IsGrounded); // 땅에 닿는지 확인
 
-        animator.speed = 1; // 속도 정상화
+        animator.speed = 1; // 속도 복구
 
         yield return new WaitUntil(() =>
         {
@@ -123,21 +135,41 @@ public class RunnerMovement : MonoBehaviour
 
         isJumping = false;
     }
+
     public void ResetMovement()
     {
         roadLine = RoadLine.MIDDLE;
         isJumping = false;
         rigidBody.position = new Vector3(0f, rigidBody.position.y, rigidBody.position.z);
+
+
+        animator.Play("Idle");
     }
+
     public void Synchronize()
     {
         animator.speed = SpeedManager.Instance.Speed / SpeedManager.Instance.InitializeSpeed;
     }
+
+    public void StateTransition()
+    {
+        animator.SetTrigger("Start");
+    }
+
+    public void Die()
+    {
+        animator.Play("Die");
+    }
+
     public void Release()
     {
         StopAllCoroutines();
 
         isJumping = false;
         animator.speed = 1f;
+
+        State.UnSubscribe(Condition.START, StateTransition);
+
+        State.UnSubscribe(Condition.FINISH, Die);
     }
 }

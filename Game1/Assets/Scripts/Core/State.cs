@@ -14,17 +14,17 @@ public static class State
 
     public static void Subscribe(Condition condition, Action action)
     {
-        if (events.ContainsKey(condition)) events[condition] += action;
+        if(events.ContainsKey(condition)) events[condition] += action;
         else events[condition] = action;
     }
 
     public static void UnSubscribe(Condition condition, Action action)
     {
-        if (events.ContainsKey(condition)) events[condition] -= action;
+        if(events.ContainsKey(condition)) events[condition] -= action;
     }
 
     public static void Publish(Condition condition)
     {
-        if (events.TryGetValue(condition, out var action)) action?.Invoke();
+        if(events.TryGetValue(condition, out var action)) action?.Invoke();
     }
 }

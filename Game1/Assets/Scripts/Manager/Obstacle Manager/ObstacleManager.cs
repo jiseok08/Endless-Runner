@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum ObstacleType
@@ -20,6 +21,7 @@ public class ObstacleManager : MonoBehaviour
 
     [SerializeField] Transform[] spawnTransforms;
 
+    // 기본 세팅값 캐싱
     [SerializeField] float startCycle;
     [SerializeField] float minCycle;
     [SerializeField] float cycleDecrease;
@@ -34,9 +36,18 @@ public class ObstacleManager : MonoBehaviour
 
     private Coroutine spawnCoroutine;
 
+    private Dictionary<SpawnPattern, ISpawnStrategy> spawnStrategies;
+
     private void Awake()
     {
         obstacleProvider = GetComponent<IObstacleProvider>();
+
+        spawnStrategies = new Dictionary<SpawnPattern, ISpawnStrategy>
+        {
+            { SpawnPattern.Single, new SingleSpawnStrategy() },
+            { SpawnPattern.Double, new DoubleSpawnStrategy() },
+            { SpawnPattern.Triple, new TripleSpawnStrategy() }
+        };
     }
 
     private void Start()
@@ -72,11 +83,16 @@ public class ObstacleManager : MonoBehaviour
         spawnCoroutine = StartCoroutine(SpawnRoutine());
     }
 
-    private void ResetSetting()
+    private void UpdateDifficulty()
     {
-        cycle = startCycle;
-        nextTime = Time.time + standardSec;
-        stepCount = 0;
+        if (Time.time >= nextTime)
+        {
+            cycle = Mathf.Max(minCycle, cycle - cycleDecrease); // 장애물 생성 주기 감소 (감소한 값이 최소값 이하일때는 최소값으로 변환)
+
+            nextTime += standardSec;
+
+            stepCount++;
+        }
     }
 
     private SpawnPattern SelectSpawnPattern()
@@ -94,60 +110,23 @@ public class ObstacleManager : MonoBehaviour
         return Random.Range(0, tripleProb) == 0 ? SpawnPattern.Triple : SpawnPattern.Double;
     }
 
-    private void UpdateDifficulty()
-    {
-        if (Time.time >= nextTime)
-        {
-            cycle = Mathf.Max(minCycle, cycle - cycleDecrease); // 장애물 생성 주기 감소 (감소한 값이 최소값 이하일때는 최소값으로 변환)
-
-            nextTime += standardSec;
-
-            stepCount++;
-        }
-    }
-
-    private void SpawnObstacle(int positionIndex, ObstacleType obstacleType)
-    {
-        GameObject obstacle = obstacleProvider.GetObstacle(obstacleType);
-
-        if (obstacle == null)
-        {
-            Debug.LogError("SpawnObstacle 함수 (obstacle == null)");
-        }
-
-        obstacle.transform.position = spawnTransforms[positionIndex].position;
-
-        obstacle.SetActive(true);
-    }
-
     private IEnumerator SpawnRoutine() 
     {
         while(true) 
         {
-            int positionIndex = Random.Range(0, spawnTransforms.Length); 
-
             UpdateDifficulty();
 
-            switch (SelectSpawnPattern())
-            {
-                case SpawnPattern.Single:
-                    SpawnObstacle(positionIndex, ObstacleType.Normal);
-                    break;
-
-                case SpawnPattern.Double:
-                    SpawnObstacle(positionIndex, ObstacleType.Normal);
-                    SpawnObstacle((positionIndex + 1) % spawnTransforms.Length, ObstacleType.Normal);
-                    break;
-
-                case SpawnPattern.Triple:
-                    SpawnObstacle(positionIndex, ObstacleType.Normal);
-                    SpawnObstacle((positionIndex + 1) % spawnTransforms.Length, ObstacleType.Normal);
-                    SpawnObstacle((positionIndex + 2) % spawnTransforms.Length, ObstacleType.Long);
-                    break;
-            }
+            spawnStrategies[SelectSpawnPattern()].Spawn(obstacleProvider, spawnTransforms); // 전략 패턴으로 생성
 
             yield return CoroutineCache.WaitForSeconds(cycle);
         }
+    }
+
+    private void ResetSetting()
+    {
+        cycle = startCycle;
+        nextTime = Time.time + standardSec;
+        stepCount = 0;
     }
 
     private void Release()

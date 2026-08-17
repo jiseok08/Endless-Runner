@@ -3,20 +3,20 @@ using UnityEngine;
 
 public class Runner : MonoBehaviour
 {
-    [SerializeField] Animator animator;
     [SerializeField] RunnerMovement runnerMovement;
+    [SerializeField] ShieldController shieldController;
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
         runnerMovement = GetComponent<RunnerMovement>();
+        shieldController = GetComponent<ShieldController>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         Obstacle obstacle = other.GetComponent<Obstacle>();
 
-        if (obstacle != null)
+        if (obstacle != null && !shieldController.TrySheild())
         {
             State.Publish(Condition.FINISH);
         }
@@ -27,7 +27,6 @@ public class Runner : MonoBehaviour
         State.Subscribe(Condition.RESET, ResetRunner);
 
         State.Subscribe(Condition.START, StartInput);
-        State.Subscribe(Condition.START, StateTransition);
 
         State.Subscribe(Condition.FINISH, Die);
         State.Subscribe(Condition.FINISH, Release);
@@ -48,8 +47,6 @@ public class Runner : MonoBehaviour
         StopAllCoroutines();
 
         runnerMovement.ResetMovement();
-
-        animator.Play("Idle");
     }
 
     IEnumerator InputRoutine()
@@ -77,21 +74,16 @@ public class Runner : MonoBehaviour
 
     void Die()
     {
-        animator.Play("Die");
         AudioManager.Instance.Listener("Conflict");
     }
 
-    public void StateTransition()
-    {
-        animator.SetTrigger("Start");
-    }
+
 
     private void OnDisable()
     {
         State.UnSubscribe(Condition.RESET, ResetRunner);
 
         State.UnSubscribe(Condition.START, StartInput);
-        State.UnSubscribe(Condition.START, StateTransition);
 
         State.UnSubscribe(Condition.FINISH, Die);
         State.UnSubscribe(Condition.FINISH, Release);

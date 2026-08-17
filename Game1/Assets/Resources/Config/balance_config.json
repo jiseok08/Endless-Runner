@@ -17,8 +17,8 @@
         "tripleProbability": 3,
         "standardSecond": 20,
         "longObstacleIndex": 0,
-        "longObstacleName": "prefabs/Long Barrier",
-        "obstacleNames": [ "prefabs/Barrier", "prefabs/Oil Berrel", "prefabs/Traffic Cone" ]
+        "longObstacleName": "Prefabs/Long Obstacles/Long Barrier",
+        "obstacleNames": [ "Prefabs/Obstacles/Barrier", "Prefabs/Obstacles/Oil Berrel", "Prefabs/Obstacles/Traffic Cone" ]
     },
     "bonusManager": {
         "stdScore_REMOVE": 0,
