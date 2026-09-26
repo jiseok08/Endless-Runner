@@ -18,8 +18,8 @@ public class Obstacle : MonoBehaviour, ICollidable
     {
         canMove = true;
         isInPool = false;
-        State.Subscribe(Condition.RESET, ResetObstacle);
-        State.Subscribe(Condition.FINISH, EndObstacle);
+        GameEvents.Subscribe(Condition.RESET, ReturnToPool);
+        GameEvents.Subscribe(Condition.FINISH, EndObstacle);
     }
 
     public void OnInteract()
@@ -30,11 +30,6 @@ public class Obstacle : MonoBehaviour, ICollidable
     private void EndObstacle()
     {
         canMove = false;
-    }
-
-    private void ResetObstacle()
-    {
-        ReturnToPool();
     }
 
     void Update()
@@ -60,7 +55,7 @@ public class Obstacle : MonoBehaviour, ICollidable
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.RESET, ResetObstacle);
-        State.UnSubscribe(Condition.FINISH, EndObstacle);
+        GameEvents.UnSubscribe(Condition.RESET, ReturnToPool);
+        GameEvents.UnSubscribe(Condition.FINISH, EndObstacle);
     }
 }

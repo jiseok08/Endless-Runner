@@ -10,7 +10,7 @@ public class ConfigManager : Singleton<ConfigManager>
 
         if (Config == null)
         {
-            Debug.LogError("GameConfig 로드 실패 게임을 시작할 수 없음");
+            Debug.LogError("GameConfig 로드 실패");
             return;
         }
     }

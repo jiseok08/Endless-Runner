@@ -8,6 +8,26 @@ public enum RoadLine
     RIGHT = 1
 }
 
+public interface IJumpInfo
+{
+    
+}
+
+public static class RoadLineInfo
+{ 
+    public const int RoadCount = 3;
+
+    public static int ToIndex(RoadLine roadLine)
+    {
+        return (int)roadLine + RoadCount / 2;
+    }
+
+    public static RoadLine FromIndex(int index)
+    {
+        return (RoadLine)(index - RoadCount / 2);
+    }
+}
+
 public class RunnerMovement : MonoBehaviour
 {
     [SerializeField] RoadLine roadLine;
@@ -25,6 +45,10 @@ public class RunnerMovement : MonoBehaviour
 
     float jumpHoldPoint = 0.4f;
 
+    float animationSlow = 0.2f;
+
+    public float JumpInitialSpeed => jumpPower / rigidBody.mass;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -41,9 +65,9 @@ public class RunnerMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.START, StateTransition);
+        GameEvents.Subscribe(Condition.START, StateTransition);
 
-        State.Subscribe(Condition.FINISH, Die);
+        GameEvents.Subscribe(Condition.FINISH, Die);
     }
 
     private void FixedUpdate()
@@ -118,7 +142,7 @@ public class RunnerMovement : MonoBehaviour
             return state.IsName("Jump") && state.normalizedTime >= jumpHoldPoint; // 진행시간이 기준 시간 이상이라면 return
         });
 
-        animator.speed = 0.2f; // 속도를 늦춰 착지 시간과 동기화
+        animator.speed = animationSlow; // 속도를 늦춰 착지 시간과 동기화
 
         yield return new WaitUntil(() => rigidBody.linearVelocity.y <= 0f && IsGrounded()); // 내려오는지 확인
 
@@ -130,7 +154,7 @@ public class RunnerMovement : MonoBehaviour
         {
             AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
 
-            return !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump");
+            return !state.IsName("Jump");
         });
 
         isJumping = false;
@@ -168,8 +192,15 @@ public class RunnerMovement : MonoBehaviour
         isJumping = false;
         animator.speed = 1f;
 
-        State.UnSubscribe(Condition.START, StateTransition);
+        GameEvents.UnSubscribe(Condition.START, StateTransition);
 
-        State.UnSubscribe(Condition.FINISH, Die);
+        GameEvents.UnSubscribe(Condition.FINISH, Die);
+    }
+            
+    private void OnDisable()
+    {
+        GameEvents.UnSubscribe(Condition.START, StateTransition);
+
+        GameEvents.UnSubscribe(Condition.FINISH, Die);
     }
 }

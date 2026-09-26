@@ -1,27 +1,33 @@
 using System.Collections.Generic;
-using UnityEngine; // °íÄ¡±â
+using UnityEngine; 
 
 public class ShopManager : MonoBehaviour, ITargetHaver
 {
     [SerializeField] List<ItemData> itemDatas = new List<ItemData>();
+    [SerializeField] Dictionary<ItemData, ItemProfileUI> profiles = new Dictionary<ItemData, ItemProfileUI>();
 
     [SerializeField] GameObject itemProfilePrefab;
 
     [SerializeField] ShopExplainZoneUI explainZone;
-
     [SerializeField] Transform spwanPoint;
-
     [SerializeField] InventoryManager inventoryManager;
+
+    private ItemProfileFactory itemProfileFactory;
 
     private void Awake()
     {
+        itemProfileFactory = new ItemProfileFactory(itemProfilePrefab, spwanPoint, this);
+
         foreach (ItemData item in itemDatas)
         {
-            ItemProfileUI profile = Instantiate(itemProfilePrefab, spwanPoint).GetComponent<ItemProfileUI>();
+            if (item == null || profiles.ContainsKey(item))
+            {
+                continue;
+            }
 
-            profile.SetTarget(item, this);
+            ItemProfileUI profile = itemProfileFactory.Create(item);
 
-            // itemDatas.Remove(item);
+            profiles.Add(item, profile);
         }
     }
 
@@ -32,37 +38,24 @@ public class ShopManager : MonoBehaviour, ITargetHaver
 
     public bool Buy(ItemData item)
     {
-        if (CoinManager.Instance.CompareCoin(item.Price))
-        {
-            inventoryManager.AddItem(item);
-
-            itemDatas.Remove(item);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public bool IsEmpty()
-    {
-        if (itemDatas.Count == 0)
-        {
-            return true;
-        }
-        else
+        if (item == null || inventoryManager.HasItem(item))
         {
             return false;
         }
-    }
 
-    public ItemData FilstData()
-    {
-        return itemDatas[0];
-    }
+        if (!CoinManager.Instance.TrySpendCoin(item.Price))
+        {
+            return false;
+        }
 
-    public void TargetReturn(ItemData target)
-    {
-        
+        inventoryManager.AddItem(item);
+
+        Destroy(profiles[item].gameObject);
+
+        profiles.Remove(item);
+
+        itemDatas.Remove(item);
+
+        return true;
     }
 }

@@ -9,8 +9,8 @@ public class RoadManager : MonoBehaviour
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.START, Execute);
-        State.Subscribe(Condition.FINISH, Release);
+        GameEvents.Subscribe(Condition.START, Execute);
+        GameEvents.Subscribe(Condition.FINISH, Release);
 
         for (int i = 0; i < roads.Count; i++)
         {
@@ -56,8 +56,8 @@ public class RoadManager : MonoBehaviour
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.START, Execute);
-        State.UnSubscribe(Condition.FINISH, Release);
+        GameEvents.UnSubscribe(Condition.START, Execute);
+        GameEvents.UnSubscribe(Condition.FINISH, Release);
 
         for (int i = 0; i < roads.Count; i++)
         {

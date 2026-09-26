@@ -20,10 +20,10 @@ public class AudioManager : Singleton<AudioManager>
 
     public void Listener(string name)
     {
-        AudioClip clip = Resources.Load<AudioClip>(name);
+        AudioClip clip = Resources.Load<AudioClip>("Audio/" + name);
         if (clip == null)
         {
-            Debug.LogWarning($"AudioClip을 찾지 못함: \"Audio/" + name);
+            Debug.LogWarning($"AudioClip을 찾지 못함: \"Audio/{name}\"");
             return;
         }
         effectAudioSource.PlayOneShot(clip);

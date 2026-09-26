@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class SingleSpawnStrategy : ISpawnStrategy
 {
-    public void Spawn(IObstacleProvider obstacleProvider, Transform[] spawnPoints)
+    public SpawnPlan CreatePlan()
     {
-        int lane = Random.Range(0, spawnPoints.Length); ;
+        SpawnPlan createPattern = new SpawnPlan();
 
-        GameObject obstacle = obstacleProvider.GetObstacle(ObstacleType.Normal);
+        int random = Random.Range(0, RoadLineInfo.RoadCount);
 
-        obstacle.transform.position = spawnPoints[lane].position;
+        createPattern.AddSpawnData(RoadLineInfo.FromIndex(random), ObstacleType.Normal);
 
-        obstacle.SetActive(true);
+        return createPattern;
     }
 }

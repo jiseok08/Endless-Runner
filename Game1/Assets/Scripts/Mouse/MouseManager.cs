@@ -2,23 +2,14 @@ using UnityEngine;
 
 public class MouseManager : MonoBehaviour
 {
-    [SerializeField] Texture2D texture2D;
-
-    private void Awake()
-    {
-        texture2D = Resources.Load<Texture2D>("Default");
-    }
-
     private void OnEnable()
     {
-        State.Subscribe(Condition.START, DisableMode);
-        State.Subscribe(Condition.FINISH, EnableMode);
+        GameEvents.Subscribe(Condition.START, DisableMode);
+        GameEvents.Subscribe(Condition.FINISH, EnableMode);
     }
 
     void Start()
     {
-        Cursor.SetCursor(texture2D, Vector2.zero, CursorMode.ForceSoftware);
-
         EnableMode();
     }
 
@@ -36,7 +27,7 @@ public class MouseManager : MonoBehaviour
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.START, DisableMode);
-        State.UnSubscribe(Condition.FINISH, EnableMode);
+        GameEvents.UnSubscribe(Condition.START, DisableMode);
+        GameEvents.UnSubscribe(Condition.FINISH, EnableMode);
     }
 }

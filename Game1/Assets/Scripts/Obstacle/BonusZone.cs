@@ -15,9 +15,12 @@ public class BonusZone : MonoBehaviour
 
         if (check == false && runner != null)
         {
-            BonusManager.Instance.Bonus();
+            GameEvents.Publish(Condition.BONUS);
             
             check = true;
         }
     }
 }
+
+
+

@@ -1,51 +1,135 @@
 using System.Collections.Generic;
-using UnityEngine; // ¡°∞À « ø‰
+using UnityEngine;
 
 public class InventoryManager : MonoBehaviour, ITargetHaver
 {
+    private const string ItemSaveKey = "Inventory.Item.";
+
     [SerializeField] List<ItemData> inventory = new List<ItemData>();
 
     [SerializeField] EquipmentManager equipmentManager;
-    [SerializeField] InventoryExplainZoneUI ExplainZoneUI;
+    [SerializeField] InventoryExplainZoneUI explainZoneUI;
 
-    [SerializeField] GameObject inventoryProfile;
+    [SerializeField] GameObject inventoryProfilePrefab;
+    [SerializeField] Transform spawnPoint;
 
-    [SerializeField] Transform spwanPoint;
+    private Dictionary<ItemData, ItemProfileUI> profiles = new Dictionary<ItemData, ItemProfileUI>();
+
+    private ItemProfileFactory profileFactory;
 
     private ItemData target;
 
-    public void CreateCheak()
+    private void Awake()
     {
+        CreateCheck();
+    }
+
+    public void CreateCheck()
+    {
+        if (profileFactory == null)
+        {
+            profileFactory = new ItemProfileFactory(inventoryProfilePrefab, spawnPoint, this);
+        }
+
         foreach (ItemData item in inventory)
         {
-            if (item == null)
+            if (item == null || profiles.ContainsKey(item))
             {
-                return;
+                continue;
             }
 
-            ItemProfileUI profile = Instantiate(inventoryProfile, spwanPoint).GetComponent<ItemProfileUI>();
+            ItemProfileUI profile = profileFactory.Create(item);
 
-            profile.SetTarget(item, this);
+            profiles.Add(item, profile);
         }
+    }
+
+    public void LoadItems(IEnumerable<ItemData> itemDatas)
+    {
+        foreach (ItemData item in itemDatas)
+        {
+            if (item == null || string.IsNullOrWhiteSpace(item.ItemId) || inventory.Contains(item))
+            {
+                continue;
+            }
+
+            if (PlayerPrefs.GetInt(ItemSaveKey + item.ItemId, 0) == 1)
+            {
+                inventory.Add(item);
+            }
+        }
+
+        CreateCheck();
     }
 
     public void Equip(ItemData target)
     {
-         equipmentManager.EquipItem(target);
+        if (equipmentManager.EquipItem(target))
+        {
+            if (profiles.TryGetValue(target, out ItemProfileUI profile))
+            {
+                profile.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void UnEquip(ItemData target)
+    {
+        if (equipmentManager.RemoveItem(target))
+        {
+            if (profiles.TryGetValue(target, out ItemProfileUI profile))
+            {
+                profile.gameObject.SetActive(true);
+            }
+        }
     }
 
     public void AddItem(ItemData itemData)
     {
-        Debug.Log("AddItem");
+        if (itemData == null || inventory.Contains(itemData))
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(itemData.ItemId))
+        {
+            Debug.LogError("Item IdÍ∞Ä ÎπÑÏñ¥ÏûàÏùå");
+
+            return;
+        }
 
         inventory.Add(itemData);
+
+        PlayerPrefs.SetInt(ItemSaveKey + itemData.ItemId, 1);
+        PlayerPrefs.Save();
+
+        CreateCheck();
+    }
+
+    public bool HasItem(ItemData itemData)
+    {
+        if (itemData == null)
+        {
+            return false;
+        }
+
+        return inventory.Contains(itemData);
     }
 
     public void ChangeTarget(ItemData newTarget)
     {
         target = newTarget;
 
-        ExplainZoneUI.ChangeTarget(target);
+        explainZoneUI.ChangeTarget(target);
     }
 
+    public bool IsEquip(ItemData itemData)
+    {
+        if (itemData == null)
+        {
+            return false;
+        }
+
+        return equipmentManager.IsEquipped(itemData);
+    }
 }

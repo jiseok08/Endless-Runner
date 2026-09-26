@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ItemEffectTargetRegistry
 {
@@ -8,23 +7,14 @@ public class ItemEffectTargetRegistry
 
     public void Register<T>(T target) where T : class
     {
-        Type type = typeof(T);
-
-        if (targets.ContainsKey(type))
-        {
-            return;
-        }
-        else
-        {
-            targets.Add(type, target);
-        }
+        targets[typeof(T)] = target;
     }
 
     public T Get<T>() where T : class
     { 
         if (targets.TryGetValue(typeof(T), out object target))
         {
-            return target as T;
+            return (T)target;
         }
         
         return null;

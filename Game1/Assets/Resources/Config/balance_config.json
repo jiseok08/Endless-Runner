@@ -1,30 +1,60 @@
 {
-    "runner": {
-        "jumpPower": 7.5,
-        "positionX": 4.0
-    },
-    "speedManager": {
-        "startSpeed": 30.0,
-        "limitSpeed": 50.0,
-        "increaseSpeed": 2.5,
-        "increaseTime": 7.0
-    },
-    "obstacleManager": {
-        "startCycle": 4.0,
-        "minCycle": 2.5,
-        "cycleDecrease": 0.5,
-        "createCount": 5,
-        "tripleProbability": 3,
-        "standardSecond": 20,
-        "longObstacleIndex": 0,
-        "longObstacleName": "Prefabs/Long Obstacles/Long Barrier",
-        "obstacleNames": [ "Prefabs/Obstacles/Barrier", "Prefabs/Obstacles/Oil Berrel", "Prefabs/Obstacles/Traffic Cone" ]
-    },
-    "bonusManager": {
-        "stdScore_REMOVE": 0,
-        "standardScore": 10,
-        "maxCombo": 5,
-        "startComboTime": 5,
-        "textHoldingTime": 3
-    }
+  "runner": {
+    "jumpPower": 7.5,
+    "positionX": 4.0
+  },
+
+  "speedManager": {
+    "startSpeed": 30.0,
+    "limitSpeed": 50.0,
+    "increaseSpeed": 2.5,
+    "increaseTime": 7.0
+  },
+
+  "scoreManager": {
+    "baseScore": 1,
+    "scoreInterval": 0.1
+  },
+
+  "obstacleManager": {
+    "startCycle": 4.0,
+    "startMinCycle": 2.5,
+    "cycleDecrease": 0.5,
+    "tripleProbability": 2,
+    "doubleLongProbability": 3,
+    "standardStageCount": 8,
+    "lookAheadCount": 2
+  },
+
+  "obstaclePool": {
+    "createCount": 5,
+    "longObstacleName": "Prefabs/Long Obstacles/Long Barrier",
+    "obstacleNames": [ "Prefabs/Obstacles/Barrier", "Prefabs/Obstacles/Oil Barrel", "Prefabs/Obstacles/Traffic Cone" ]
+  },
+
+  "bonusManager": {
+    "standardScore": 10,
+    "maxCombo": 5,
+    "startComboTime": 5,
+    "textHoldingTime": 3
+  },
+
+  "coinRouteRunner": {
+    "jumpOffset": 0.0,
+    "passMargin": 3.0
+  },
+
+  "coinSpawner": {
+    "spawnInterval": 0.3,
+    "heightOffset": 1.0
+  },
+
+  "coinPool": {
+    "coinName": "Prefabs/Coin/Coin",
+    "createCount": 30
+  },
+
+  "coin": {
+    "coinValue": 1
+  }
 }

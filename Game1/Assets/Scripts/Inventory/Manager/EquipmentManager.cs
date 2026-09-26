@@ -1,6 +1,5 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI; // 여기서부터 수정
+using UnityEngine.UI;
 
 public class EquipmentManager : MonoBehaviour
 {
@@ -8,64 +7,92 @@ public class EquipmentManager : MonoBehaviour
 
     [SerializeField] ItemData[] equippedItems = new ItemData[SlotCount];
 
-    [SerializeField] Image[] equipImages = new Image[SlotCount];
-
-    [SerializeField] int targetIndex = 0;
+    [SerializeField] EquippedItemProfile[] equipProfiles = new EquippedItemProfile[SlotCount];
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.START, ApplyItemEffect);
+        GameEvents.Subscribe(Condition.START, ApplyItemEffect);
     }
 
     private void ApplyItemEffect()
     {
         foreach (ItemData item in equippedItems)
         {
-            if (item != null)
+            if (item == null || item.Effect == null)
             {
-                item.Effect.Apply();
+                continue;
             }
+
+            item.Effect.Apply();
         }
     }
 
-    public void EquipItem(ItemData itemData)
+    public bool EquipItem(ItemData itemData)
     {
-        Debug.Log("작동은 함");
+        if (itemData == null || IsEquipped(itemData))
+        {
+            return false;
+        }
+
         for (int i = 0; i < SlotCount; i++)
         {
             if (equippedItems[i] != null)
             {
-                Debug.Log("컨티뉴");
-
                 continue;
             }
 
             equippedItems[i] = itemData;
-            equipImages[i].sprite = itemData.Icon;
-            Debug.Log("아이템 장착");
+            equipProfiles[i].TargetUpdate(itemData);
 
-            return;
+            return true;
         }
+
+        return false;
     }
 
-    public void RemoveItem(ItemData itemData)
+    public bool RemoveItem(ItemData itemData)
     {
-        if (equippedItems[targetIndex] != itemData)
+        if (itemData == null)
         {
-            return;
+            return false;
         }
 
-        equippedItems[targetIndex] = null;
-        equipImages[targetIndex].sprite = null;
+        for (int i = 0; i < SlotCount; i++)
+        {
+            if (equippedItems[i] != itemData)
+            {
+                continue;
+            }
+
+            equippedItems[i] = null;
+            equipProfiles[i].TargetUpdate(null);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool IsEquipped(ItemData itemData)
+    {
+        if (itemData == null)
+        {
+            return false;
+        }
+
+        foreach (ItemData item in equippedItems)
+        {
+            if (item == itemData)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.START, ApplyItemEffect);
-    }
-
-    public void ChangeTarget(ItemData newTarget)
-    {
-        throw new System.NotImplementedException();
+        GameEvents.UnSubscribe(Condition.START, ApplyItemEffect);
     }
 }

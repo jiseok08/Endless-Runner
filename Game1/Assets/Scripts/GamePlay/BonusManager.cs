@@ -2,15 +2,15 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BonusManager : Singleton<BonusManager>
+public class BonusManager : MonoBehaviour
 {
-    int stdScore;
-
-    int comboCount = 0;
+    [SerializeField] int comboCount = 0;
 
     int comboTime = 0;
 
+    int stdScore;
     int startComboTime;
+    int maxCombo;
 
     [SerializeField] Text bonusScoreText;
     [SerializeField] GameObject ComboTimePanel;
@@ -27,8 +27,9 @@ public class BonusManager : Singleton<BonusManager>
         var c = ConfigManager.Instance.Config.bonusManager;
 
         stdScore = c.standardScore;
+        maxCombo = c.maxCombo;
         startComboTime = c.startComboTime;
-        textHoldingTime = new(c.textHoldingTime);
+        textHoldingTime = new WaitForSeconds(c.textHoldingTime);
 
         ComboTimePanel.SetActive(false);
         bonusScoreText.gameObject.SetActive(false);
@@ -36,11 +37,13 @@ public class BonusManager : Singleton<BonusManager>
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.RESET, ResetBonus);
-        State.Subscribe(Condition.FINISH, StopAll);
+        GameEvents.Subscribe(Condition.RESET, ResetBonus);
+        GameEvents.Subscribe(Condition.FINISH, StopAll);
+        
+        GameEvents.Subscribe(Condition.BONUS, Bonus);
     }
 
-    public void Bonus()
+    private void Bonus()
     {
         if (comboRoutine != null) StopCoroutine(comboRoutine);
         if (textRoutine != null) StopCoroutine(textRoutine);
@@ -60,7 +63,7 @@ public class BonusManager : Singleton<BonusManager>
 
         comboTimeText.text = comboTime.ToString();
 
-        if (comboCount < 5)
+        if (comboCount < maxCombo)
         {
             comboCount++;
         }
@@ -88,7 +91,7 @@ public class BonusManager : Singleton<BonusManager>
 
     IEnumerator BonusText(int addScore)
     {
-        bonusScoreText.text = string.Format("+ " + addScore);
+        bonusScoreText.text = "+ " + addScore;
 
         if (bonusScoreText.IsActive() == false)
         {
@@ -121,7 +124,9 @@ public class BonusManager : Singleton<BonusManager>
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.RESET, ResetBonus);
-        State.UnSubscribe(Condition.FINISH, StopAll);
+        GameEvents.UnSubscribe(Condition.RESET, ResetBonus);
+        GameEvents.UnSubscribe(Condition.FINISH, StopAll);
+
+        GameEvents.UnSubscribe(Condition.BONUS, Bonus);
     }
 }

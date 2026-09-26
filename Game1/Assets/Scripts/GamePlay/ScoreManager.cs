@@ -2,32 +2,55 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScoreManager : Singleton<ScoreManager>
+public interface IScoreMultiplierReceiver
 {
+    void SetScoreMultiplier(float multiplier);
+}
+
+public class ScoreManager : Singleton<ScoreManager>, IScoreMultiplierReceiver
+{
+    private const string SaveKey = "HighScore";
+
     [SerializeField] Text scoreText;
     [SerializeField] Text highScoreText;
 
-    WaitForSeconds waitForSeconds = new(0.1f);
+    WaitForSeconds scoreInterval;
 
-    int score = 0;
-    int highScore = 0;
+    int score;
+    int highScore;
+    int baseScore;
+
+    float multiplier = 1;
+    float scoreBuffer = 0;
 
     private void Start()
     {
-        highScore = PlayerPrefs.GetInt("HighScore", 0); // HighScore 값을 가져오고 없다면 0을 반환
+        var c = ConfigManager.Instance.Config.scoreManager;
+
+        baseScore = c.baseScore;
+
+        scoreInterval = new WaitForSeconds(c.scoreInterval);
+
+        highScore = PlayerPrefs.GetInt(SaveKey, 0); // HighScore 값을 가져오고 없다면 0을 반환
         highScoreText.text = "High Score : " + highScore;
+
+        ResetScore();
+
+        ItemManager.Instance.Registry.Register<IScoreMultiplierReceiver>(this);
     }
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.RESET, ResetScore);  
-        State.Subscribe(Condition.START, Execute);
-        State.Subscribe(Condition.FINISH, Release);
+        GameEvents.Subscribe(Condition.RESET, ResetScore);  
+        GameEvents.Subscribe(Condition.START, Execute);
+        GameEvents.Subscribe(Condition.FINISH, Release);
     }
 
     void ResetScore()
     {
         score = 0;
+        multiplier = 1;
+        scoreBuffer = 0;
         scoreText.text = "Score : 0";
     }
 
@@ -44,22 +67,33 @@ public class ScoreManager : Singleton<ScoreManager>
         {
             highScore = score;
 
-            highScoreText.text = string.Format("High Score : " + highScore);
+            highScoreText.text = "High Score : " + highScore;
 
             PlayerPrefs.SetInt("HighScore", highScore);
             PlayerPrefs.Save();   
         }
     }
 
+    public void SetScoreMultiplier(float multiplier)
+    {
+        this.multiplier = multiplier;
+    }
+
     public IEnumerator Score()
     {
         while (true)
         {
-            score += 1;
+            scoreBuffer += baseScore * multiplier;
 
-            scoreText.text = string.Format("Score : " + score);
+            int addScore = Mathf.FloorToInt(scoreBuffer);
 
-            yield return waitForSeconds; // 0.1초마다 1점씩 오름
+            score += addScore;
+
+            scoreBuffer -= addScore;
+
+            UpdateUI();
+
+            yield return scoreInterval;
         }
     }
 
@@ -73,13 +107,15 @@ public class ScoreManager : Singleton<ScoreManager>
     void UpdateUI()
     {
         if (scoreText != null)
+        {
             scoreText.text = "Score : " + score;
+        }
     }
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.RESET, ResetScore);
-        State.UnSubscribe(Condition.START, Execute);
-        State.UnSubscribe(Condition.FINISH, Release);
+        GameEvents.UnSubscribe(Condition.RESET, ResetScore);
+        GameEvents.UnSubscribe(Condition.START, Execute);
+        GameEvents.UnSubscribe(Condition.FINISH, Release);
     }
 }

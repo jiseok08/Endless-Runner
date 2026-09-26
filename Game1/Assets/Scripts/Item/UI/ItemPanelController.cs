@@ -6,8 +6,8 @@ public class ItemPanelController : MonoBehaviour
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.RESET, ActiveTrue);
-        State.Subscribe(Condition.START, ActiveFalse);
+        GameEvents.Subscribe(Condition.RESET, ActiveTrue);
+        GameEvents.Subscribe(Condition.START, ActiveFalse);
     }
 
     private void ActiveTrue()
@@ -22,7 +22,7 @@ public class ItemPanelController : MonoBehaviour
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.RESET, ActiveTrue);
-        State.UnSubscribe(Condition.START, ActiveFalse);
+        GameEvents.UnSubscribe(Condition.RESET, ActiveTrue);
+        GameEvents.UnSubscribe(Condition.START, ActiveFalse);
     }
 }

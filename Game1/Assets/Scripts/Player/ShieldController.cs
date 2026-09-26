@@ -9,17 +9,12 @@ public class ShieldController : MonoBehaviour, IShieldReceiver
 {
     private int shieldCount = 0;
 
-    private void Start()
-    {
-        ItemManager.Instance.Registry.Register<IShieldReceiver>(this);
-    }
-
     public void AddShield(int amount)
     {
         shieldCount += amount;
     }
 
-    public bool TrySheild()
+    public bool TryShield()
     {
         if (shieldCount <= 0)
         {
@@ -29,4 +24,11 @@ public class ShieldController : MonoBehaviour, IShieldReceiver
         shieldCount--;
         return true;
     }
+
+    private void Start()
+    {
+        ItemManager.Instance.Registry.Register<IShieldReceiver>(this);
+    }
+
+
 }

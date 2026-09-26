@@ -16,20 +16,29 @@ public class Runner : MonoBehaviour
     {
         Obstacle obstacle = other.GetComponent<Obstacle>();
 
-        if (obstacle != null && !shieldController.TrySheild())
+        if (obstacle == null)
         {
-            State.Publish(Condition.FINISH);
+            return;
         }
+
+        if (shieldController.TryShield())
+        {
+            obstacle.OnInteract();
+
+            return;
+        }
+
+        GameEvents.Publish(Condition.FINISH);
     }
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.RESET, ResetRunner);
+        GameEvents.Subscribe(Condition.RESET, ResetRunner);
 
-        State.Subscribe(Condition.START, StartInput);
+        GameEvents.Subscribe(Condition.START, StartInput);
 
-        State.Subscribe(Condition.FINISH, Die);
-        State.Subscribe(Condition.FINISH, Release);
+        GameEvents.Subscribe(Condition.FINISH, Die);
+        GameEvents.Subscribe(Condition.FINISH, Release);
     }
 
     public void StartInput()
@@ -77,15 +86,13 @@ public class Runner : MonoBehaviour
         AudioManager.Instance.Listener("Conflict");
     }
 
-
-
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.RESET, ResetRunner);
+        GameEvents.UnSubscribe(Condition.RESET, ResetRunner);
 
-        State.UnSubscribe(Condition.START, StartInput);
+        GameEvents.UnSubscribe(Condition.START, StartInput);
 
-        State.UnSubscribe(Condition.FINISH, Die);
-        State.UnSubscribe(Condition.FINISH, Release);
+        GameEvents.UnSubscribe(Condition.FINISH, Die);
+        GameEvents.UnSubscribe(Condition.FINISH, Release);
     }
 }

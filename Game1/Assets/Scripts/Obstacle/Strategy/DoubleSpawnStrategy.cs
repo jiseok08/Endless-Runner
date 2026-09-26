@@ -4,17 +4,17 @@ public class DoubleSpawnStrategy : ISpawnStrategy
 {
     private const int SpawnCount = 2;
 
-    public void Spawn(IObstacleProvider obstacleProvider, Transform[] spawnPoints)
+    public SpawnPlan CreatePlan()
     {
-        int positionIndex = Random.Range(0, spawnPoints.Length); 
+        SpawnPlan createPattern = new SpawnPlan();
+
+        int random = Random.Range(0, RoadLineInfo.RoadCount);
 
         for (int i = 0; i < SpawnCount; i++)
         {
-            GameObject obstacle = obstacleProvider.GetObstacle(ObstacleType.Normal);
-
-            obstacle.transform.position = spawnPoints[(positionIndex + i) % spawnPoints.Length].position;
-
-            obstacle.SetActive(true);
+            createPattern.AddSpawnData(RoadLineInfo.FromIndex((i + random) % RoadLineInfo.RoadCount), ObstacleType.Normal);
         }
+
+        return createPattern;
     }
 }

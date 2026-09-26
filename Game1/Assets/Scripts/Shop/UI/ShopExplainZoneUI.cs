@@ -21,6 +21,19 @@ public class ShopExplainZoneUI : MonoBehaviour
 
     private void DataSet()
     {
+        if (target == null)
+        {
+            itemProfileName.text = null;
+
+            description.text = null;
+
+            price.text = null;
+
+            icon.sprite = null;
+
+            return;
+        }
+
         itemProfileName.text = target.ItemName;
 
         description.text = target.Description;
@@ -42,6 +55,13 @@ public class ShopExplainZoneUI : MonoBehaviour
 
     public void Buy()
     {
-        shopManager.Buy(target);
+        if(!shopManager.Buy(target))
+        {
+            return;
+        }
+
+        target = null;
+
+        DataSet();
     }
 }

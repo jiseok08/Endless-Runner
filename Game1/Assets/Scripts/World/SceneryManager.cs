@@ -4,18 +4,18 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class SceneryManager : MonoBehaviour
+public class SceneryManager : MonoBehaviour // 사용 안 함 (더 알아보기)
 {
     [SerializeField] Image screenImage;
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.RESET, Continue);
+        GameEvents.Subscribe(Condition.RESET, Continue);
     }
 
     void Continue()
     {
-        StartCoroutine(Coroutine());
+        Debug.Log("reload");
     }
 
     public IEnumerator Coroutine()
@@ -56,6 +56,6 @@ public class SceneryManager : MonoBehaviour
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.RESET, Continue);
+        GameEvents.UnSubscribe(Condition.RESET, Continue);
     }
 }

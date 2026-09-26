@@ -7,18 +7,22 @@ public interface ITargetHaver
 }
 
 public class ItemProfileUI : MonoBehaviour
-{
-    [SerializeField] ITargetHaver parent;
-
-    [SerializeField] ItemData target;
-
+{ 
     [SerializeField] Text itemProfileName;
 
     [SerializeField] Text price;
     [SerializeField] Image icon;
 
-    private void Start()
+    private ITargetHaver parent;
+
+    private ItemData target;
+
+    public void SetTarget(ItemData data, ITargetHaver parence)
     {
+        target = data;
+
+        parent = parence;
+
         itemProfileName.text = target.ItemName;
 
         if (price != null)
@@ -27,13 +31,6 @@ public class ItemProfileUI : MonoBehaviour
         }
 
         icon.sprite = target.Icon;
-    }
-
-    public void SetTarget(ItemData data, ITargetHaver parence)
-    {
-        target = data;
-
-        parent = parence;
     }
 
     public void ChangeExplain()

@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,30 +10,32 @@ public class InventoryExplainZoneUI : MonoBehaviour
     [SerializeField] Text itemProfileName;
     [SerializeField] Text description;
     [SerializeField] Image icon;
+    [SerializeField] EquipButtonUI equipButton;
 
     private void Awake()
     {
+        equipButton = GetComponentInChildren<EquipButtonUI>();
+
         if (inventoryManager != null)
         {
             DataSet();
         }
     }
 
-    private void OnEnable()
-    {
-        inventoryManager.CreateCheak();
-    }
-
     private void DataSet()
     {
-        if (target != null)
+        if (target == null)
         {
-            itemProfileName.text = target.ItemName;
+            itemProfileName.text = null;
+            description.text = null;
+            icon.sprite = null;
 
-            description.text = target.Description;
-
-            icon.sprite = target.Icon;
+            return;
         }
+
+        itemProfileName.text = target.ItemName;
+        description.text = target.Description;
+        icon.sprite = target.Icon;
     }
 
     public void ChangeTarget(ItemData newTarget)
@@ -42,10 +43,22 @@ public class InventoryExplainZoneUI : MonoBehaviour
         target = newTarget;
 
         DataSet();
+
+        equipButton.ButtonUpdate();
     }
 
     public void Equip()
     {
         inventoryManager.Equip(target);
+    }
+
+    public void UnEnquip()
+    {
+        inventoryManager.UnEquip(target);
+    }
+
+    public bool IsEquipped()
+    {
+        return inventoryManager.IsEquip(target);
     }
 }

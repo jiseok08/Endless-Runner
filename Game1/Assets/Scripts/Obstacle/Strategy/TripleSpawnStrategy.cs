@@ -4,17 +4,20 @@ public class TripleSpawnStrategy : ISpawnStrategy
 {
     private const int SpawnCount = 3;
 
-    public void Spawn(IObstacleProvider obstacleProvider, Transform[] spawnPoints)
+    public SpawnPlan CreatePlan()
     {
-        int positionIndex = Random.Range(0, spawnPoints.Length);
+        SpawnPlan createPattern = new SpawnPlan();
+
+        int random = Random.Range(0, RoadLineInfo.RoadCount);
 
         for (int i = 0; i < SpawnCount; i++)
-        { 
-            GameObject obstacle = i == SpawnCount - 1 ? obstacleProvider.GetObstacle(ObstacleType.Long) : obstacleProvider.GetObstacle(ObstacleType.Normal);
-
-            obstacle.transform.position = spawnPoints[(positionIndex + i) % spawnPoints.Length].position;
-
-            obstacle.SetActive(true);
+        {
+            createPattern.AddSpawnData(RoadLineInfo.FromIndex((i + random) % RoadLineInfo.RoadCount), 
+                i == SpawnCount - 1 ? (ObstacleType.Long) : (ObstacleType.Normal));
         }
+
+        return createPattern;
     }
 }
+
+

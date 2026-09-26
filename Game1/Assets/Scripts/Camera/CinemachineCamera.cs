@@ -12,8 +12,8 @@ public class CinemachineCamera : MonoBehaviour
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.RESET, CameraReset);
-        State.Subscribe(Condition.FINISH, Observe);
+        GameEvents.Subscribe(Condition.RESET, CameraReset);
+        GameEvents.Subscribe(Condition.FINISH, Observe);
     }
 
     void CameraReset()
@@ -28,7 +28,7 @@ public class CinemachineCamera : MonoBehaviour
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.RESET, CameraReset);
-        State.UnSubscribe(Condition.FINISH, Observe);
+        GameEvents.UnSubscribe(Condition.RESET, CameraReset);
+        GameEvents.UnSubscribe(Condition.FINISH, Observe);
     }
 }

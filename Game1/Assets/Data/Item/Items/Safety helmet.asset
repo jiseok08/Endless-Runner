@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e06651369c56e4abcccfc1ab5eddea, type: 3}
   m_Name: Safety helmet
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemNumber: 0
+  itemId: 2
   itemName: Safety helmet
   description: It can withstand one collision with an obstacle.
   price: 500

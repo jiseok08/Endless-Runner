@@ -41,9 +41,9 @@ public class SpeedManager : Singleton<SpeedManager>
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.RESET, ResetSpeed);
-        State.Subscribe(Condition.START, Excute);
-        State.Subscribe(Condition.FINISH, Release);
+        GameEvents.Subscribe(Condition.RESET, ResetSpeed);
+        GameEvents.Subscribe(Condition.START, Excute);
+        GameEvents.Subscribe(Condition.FINISH, Release);
     }
 
     void Excute()
@@ -74,8 +74,8 @@ public class SpeedManager : Singleton<SpeedManager>
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.RESET, ResetSpeed);
-        State.UnSubscribe(Condition.START, Excute);
-        State.UnSubscribe(Condition.FINISH, Release);
+        GameEvents.UnSubscribe(Condition.RESET, ResetSpeed);
+        GameEvents.UnSubscribe(Condition.START, Excute);
+        GameEvents.UnSubscribe(Condition.FINISH, Release);
     }
 }

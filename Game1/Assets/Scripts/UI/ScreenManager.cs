@@ -10,8 +10,8 @@ public class ScreenManager : MonoBehaviour
 
     private void OnEnable()
     {
-        State.Subscribe(Condition.START, ExecuteInterface);
-        State.Subscribe(Condition.FINISH, FinishInterface);
+        GameEvents.Subscribe(Condition.START, ExecuteInterface);
+        GameEvents.Subscribe(Condition.FINISH, FinishInterface);
     }
 
     public void ExecuteInterface()
@@ -27,7 +27,7 @@ public class ScreenManager : MonoBehaviour
 
     private void OnDisable()
     {
-        State.UnSubscribe(Condition.START, ExecuteInterface);
-        State.UnSubscribe(Condition.FINISH, FinishInterface);
+        GameEvents.UnSubscribe(Condition.START, ExecuteInterface);
+        GameEvents.UnSubscribe(Condition.FINISH, FinishInterface);
     }
 }

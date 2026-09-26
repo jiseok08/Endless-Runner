@@ -1,9 +1,26 @@
-using UnityEngine; // 여기부터
+using UnityEngine;
 
-public class ItemProfileFactory : MonoBehaviour
+public class ItemProfileFactory
 {
-    public void Create(GameObject ItemProfile, Transform spwanPoint)
+    private readonly GameObject itemProfile;
+
+    private readonly Transform spwanPoint;
+
+    private readonly ITargetHaver targetHaver;
+
+    public ItemProfileFactory(GameObject ItemProfile, Transform spwanPoint, ITargetHaver targetHaver)
     {
-        ItemProfileUI profile = Instantiate(ItemProfile, spwanPoint).GetComponent<ItemProfileUI>();
+        this.itemProfile = ItemProfile;
+        this.spwanPoint = spwanPoint;
+        this.targetHaver = targetHaver;
+    }
+
+    public ItemProfileUI Create(ItemData target)
+    {
+        ItemProfileUI profile = Object.Instantiate(itemProfile, spwanPoint).GetComponent<ItemProfileUI>();
+
+        profile.SetTarget(target, targetHaver);
+
+        return profile;
     }
 }
