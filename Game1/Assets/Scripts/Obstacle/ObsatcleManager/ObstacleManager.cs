@@ -28,22 +28,23 @@ public class ObstacleManager : MonoBehaviour, ISpawnIntervalReceiver
     private ObstacleSpawner spawner;
     private SafeLineFinder safeLineFinder;
 
-    [SerializeField] Transform[] spawnTransforms;
-
     [SerializeField] float startCycle;
     [SerializeField] float startMinCycle;
+    [SerializeField] float limitCycle;
     [SerializeField] float cycleDecrease;
 
-    [SerializeField] int tripleProbability;
-    [SerializeField] int doubleLongProbability;
     [SerializeField] int standardStageCount;
 
     [SerializeField] float cycle;
     [SerializeField] float minCycle;
 
+    private ObstacleStageConfig[] stages;
+
     int plannedCount; // 패턴 결정용
     int spawnedCount; // 생성 주기 감소용
     int lookAheadCount;
+
+    private Vector3[] spawnPoints;
 
     private Coroutine spawnCoroutine;
 
@@ -72,12 +73,15 @@ public class ObstacleManager : MonoBehaviour, ISpawnIntervalReceiver
 
         startCycle = c.startCycle;
         startMinCycle = c.startMinCycle;
+        limitCycle = c.limitCycle;
         cycleDecrease = c.cycleDecrease;
 
-        tripleProbability = c.tripleProbability;
-        doubleLongProbability = c.doubleLongProbability;
         standardStageCount = c.standardStageCount;
         lookAheadCount = c.lookAheadCount;
+
+        stages = c.stages;
+
+        spawnPoints = ConfigManager.Instance.Config.obstacleSpawn.spawnPoints;
 
         cycle = startCycle;
         minCycle = startMinCycle;
@@ -107,24 +111,6 @@ public class ObstacleManager : MonoBehaviour, ISpawnIntervalReceiver
         spawnCoroutine = StartCoroutine(SpawnRoutine());
     }
 
-    private void Spawn()
-    {
-        var (success, safeLine, obstacleType) = safeLineFinder.FindSafeLine(spawner.GetPatterns());
-
-        Debug.Log($"생성 검사: {success}, 선택 라인: {safeLine}, 장애물: {obstacleType}");
-
-        if (!success)
-        {
-            return;
-        }
-
-        spawner.Spawn(spawnTransforms);
-
-        UpdateDifficulty();
-
-        AddNextPattern();
-    }
-
     private void AddNextPattern()
     {
         SpawnPlan[] currentPlans = spawner.GetPatterns();
@@ -142,7 +128,7 @@ public class ObstacleManager : MonoBehaviour, ISpawnIntervalReceiver
         {
             plans[lastIndex] = spawnStrategies[SelectSpawnPattern()].CreatePlan();
 
-            bool success = safeLineFinder.FindSafeLine(plans, updateLine: false).success;
+            bool success = safeLineFinder.FindSafeLine(plans, false).success;
 
             if (success)
             {
@@ -155,43 +141,55 @@ public class ObstacleManager : MonoBehaviour, ISpawnIntervalReceiver
         plannedCount++;
     }
 
-    private void UpdateDifficulty()
+    private void Spawn()
     {
-        spawnedCount++;
+        bool success = safeLineFinder.FindSafeLine(spawner.GetPatterns(), true).success;
 
-        if (spawnedCount % standardStageCount == 0)
+        if (!success)
         {
-            cycle = Mathf.Max(0.5f, Mathf.Max(minCycle, cycle - cycleDecrease));
+            Debug.LogError("장애물 생성 가능한 경로가 없음");
+
+            return;
         }
+
+        spawner.Spawn(spawnPoints);
+
+        UpdateDifficulty();
+
+        AddNextPattern();
     }
 
     private SpawnPattern SelectSpawnPattern()
     {
         int stage = plannedCount / standardStageCount;
 
-        switch (stage)
+        stage = Mathf.Min(stage, stages.Length - 1);
+
+        PatternWeightConfig[] patterns = stages[stage].patterns;
+
+        int randomValue = Random.Range(0, 100);
+        int accumulatedWeight = 0;
+
+        for (int i = 0; i < patterns.Length; i++)
         {
-            case 0:
-                return SpawnPattern.Single;
+            accumulatedWeight += patterns[i].weight;
 
-            case 1:
-                return SpawnPattern.Double;
+            if (randomValue < accumulatedWeight)
+            {
+                return (SpawnPattern)System.Enum.Parse(typeof(SpawnPattern), patterns[i].pattern);
+            }
+        }
 
-            case 2:
-                return Random.Range(0, tripleProbability) == 0 ? SpawnPattern.Triple : SpawnPattern.Double;
+        return SpawnPattern.Single;
+    }
 
-            default:
-                if (Random.Range(0, doubleLongProbability) == 0)
-                {
-                    return SpawnPattern.DoubleLong;
-                }
+    private void UpdateDifficulty()
+    {
+        spawnedCount++;
 
-                if (Random.Range(0, tripleProbability) == 0)
-                {
-                    return SpawnPattern.Triple;
-                }
-
-                return SpawnPattern.Double;
+        if (spawnedCount % standardStageCount == 0)
+        {
+            cycle = Mathf.Max(limitCycle, Mathf.Max(minCycle, cycle - cycleDecrease));
         }
     }
 

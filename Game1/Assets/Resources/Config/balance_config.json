@@ -1,7 +1,8 @@
 {
   "runner": {
     "jumpPower": 7.5,
-    "positionX": 4.0
+    "positionX": 4.0,
+    "laneChangeTime" : 0.05
   },
 
   "speedManager": {
@@ -16,14 +17,59 @@
     "scoreInterval": 0.1
   },
 
+  "obstacleSpawn": {
+    "spawnPoints": [
+      { "x": -4.0, "y": 0.0, "z": 160.0 },
+      { "x": 0.0, "y": 0.0, "z": 160.0 },
+      { "x": 4.0, "y": 0.0, "z": 160.0 }
+    ]
+},
+
   "obstacleManager": {
     "startCycle": 4.0,
     "startMinCycle": 2.5,
+    "limitCycle": 1.0,
     "cycleDecrease": 0.5,
-    "tripleProbability": 2,
-    "doubleLongProbability": 3,
     "standardStageCount": 8,
-    "lookAheadCount": 2
+    "lookAheadCount": 2,
+    "stages": [
+      {
+        "stage": 0,
+        "patterns": [
+          { "pattern": "Single", "weight": 100 },
+          { "pattern": "Double", "weight": 0 },
+          { "pattern": "Triple", "weight": 0 },
+          { "pattern": "DoubleLong", "weight": 0 }
+        ]
+      },
+      {
+        "stage": 1,
+        "patterns": [
+          { "pattern": "Single", "weight": 0 },
+          { "pattern": "Double", "weight": 100 },
+          { "pattern": "Triple", "weight": 0 },
+          { "pattern": "DoubleLong", "weight": 0 }
+        ]
+      },
+      {
+        "stage": 2,
+        "patterns": [
+          { "pattern": "Single", "weight": 0 },
+          { "pattern": "Double", "weight": 50 },
+          { "pattern": "Triple", "weight": 50 },
+          { "pattern": "DoubleLong", "weight": 0 }
+        ]
+      },
+      {
+        "stage": 3,
+        "patterns": [
+          { "pattern": "Single", "weight": 0 },
+          { "pattern": "Double", "weight": 30 },
+          { "pattern": "Triple", "weight": 40 },
+          { "pattern": "DoubleLong", "weight": 30 }
+        ]
+      }
+    ]
   },
 
   "obstaclePool": {

@@ -3,13 +3,13 @@ using UnityEngine.SceneManagement;
 
 public class ButtonManager : MonoBehaviour
 {
-    public void Excute()
+    public void StartGame()
     {
-        GameManager.Instance.StartGame();
+        GameButtonHandler.Instance.StartGame();
     }
 
-    public void Resume()
+    public void ResetGame()
     {
-        GameManager.Instance.RestartGame();
+        GameButtonHandler.Instance.RestartGame();
     }
 }

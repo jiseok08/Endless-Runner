@@ -8,11 +8,6 @@ public enum RoadLine
     RIGHT = 1
 }
 
-public interface IJumpInfo
-{
-    
-}
-
 public static class RoadLineInfo
 { 
     public const int RoadCount = 3;
@@ -30,7 +25,7 @@ public static class RoadLineInfo
 
 public class RunnerMovement : MonoBehaviour
 {
-    [SerializeField] RoadLine roadLine;
+    [SerializeField] RoadLine targetLane;
     [SerializeField] Rigidbody rigidBody;
     [SerializeField] Animator animator;
 
@@ -40,6 +35,7 @@ public class RunnerMovement : MonoBehaviour
 
     [SerializeField] float positionX;
     [SerializeField] float jumpPower;
+    [SerializeField] float laneChangeTime;
 
     [SerializeField] bool isJumping = false;
 
@@ -47,12 +43,16 @@ public class RunnerMovement : MonoBehaviour
 
     float animationSlow = 0.2f;
 
+    private Vector3 StartPosition;
+
     public float JumpInitialSpeed => jumpPower / rigidBody.mass;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody>();
+
+        StartPosition = rigidBody.position;
     }
 
     private void Start()
@@ -61,6 +61,7 @@ public class RunnerMovement : MonoBehaviour
 
         positionX = c.positionX;
         jumpPower = c.jumpPower;
+        laneChangeTime = c.laneChangeTime;
     }
 
     private void OnEnable()
@@ -77,9 +78,9 @@ public class RunnerMovement : MonoBehaviour
 
     public void LeftMove()
     {
-        if (roadLine != RoadLine.LEFT)
+        if (targetLane != RoadLine.LEFT)
         {
-            roadLine--;
+            targetLane--;
 
             if (isJumping == false)
             {
@@ -90,9 +91,9 @@ public class RunnerMovement : MonoBehaviour
 
     public void RightMove()
     {
-        if (roadLine != RoadLine.RIGHT)
+        if (targetLane != RoadLine.RIGHT)
         {
-            roadLine++;
+            targetLane++;
 
             if (isJumping == false)
             {
@@ -108,7 +109,7 @@ public class RunnerMovement : MonoBehaviour
 
     public void TryJump()
     {
-        if(isJumping || !IsGrounded())
+        if (isJumping || !IsGrounded())
         {
             return;
         }
@@ -120,11 +121,13 @@ public class RunnerMovement : MonoBehaviour
     {
         var pos = rigidBody.position;
 
-        float targetX = positionX * (int)roadLine;
+        float targetX = positionX * (int)targetLane;
 
         Vector3 target = new Vector3(targetX, pos.y, pos.z);
 
-        rigidBody.MovePosition(Vector3.Lerp(pos, target, SpeedManager.Instance.Speed * Time.fixedDeltaTime));
+        float moveSpeed = positionX / laneChangeTime;
+
+        rigidBody.MovePosition(Vector3.MoveTowards(pos, target, moveSpeed * Time.fixedDeltaTime));
     }
 
     IEnumerator Jump()
@@ -146,8 +149,6 @@ public class RunnerMovement : MonoBehaviour
 
         yield return new WaitUntil(() => rigidBody.linearVelocity.y <= 0f && IsGrounded()); // 내려오는지 확인
 
-        yield return new WaitUntil(IsGrounded); // 땅에 닿는지 확인
-
         animator.speed = 1; // 속도 복구
 
         yield return new WaitUntil(() =>
@@ -162,12 +163,23 @@ public class RunnerMovement : MonoBehaviour
 
     public void ResetMovement()
     {
-        roadLine = RoadLine.MIDDLE;
-        isJumping = false;
-        rigidBody.position = new Vector3(0f, rigidBody.position.y, rigidBody.position.z);
+        Release();
 
+        targetLane = RoadLine.MIDDLE;
+
+        rigidBody.position = StartPosition;
+
+        rigidBody.linearVelocity = Vector3.zero;
 
         animator.Play("Idle");
+    }
+
+    public void Release()
+    {
+        StopAllCoroutines();
+
+        isJumping = false;
+        animator.speed = 1f;
     }
 
     public void Synchronize()
@@ -185,18 +197,6 @@ public class RunnerMovement : MonoBehaviour
         animator.Play("Die");
     }
 
-    public void Release()
-    {
-        StopAllCoroutines();
-
-        isJumping = false;
-        animator.speed = 1f;
-
-        GameEvents.UnSubscribe(Condition.START, StateTransition);
-
-        GameEvents.UnSubscribe(Condition.FINISH, Die);
-    }
-            
     private void OnDisable()
     {
         GameEvents.UnSubscribe(Condition.START, StateTransition);

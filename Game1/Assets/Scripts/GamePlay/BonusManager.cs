@@ -17,7 +17,7 @@ public class BonusManager : MonoBehaviour
     [SerializeField] Text comboTimeText;
 
     WaitForSeconds textHoldingTime; 
-    WaitForSeconds decreaseTime = new WaitForSeconds(1f);
+    WaitForSeconds decreaseTime = CoroutineCache.WaitForSeconds(1f);
 
     Coroutine comboRoutine;
     Coroutine textRoutine;
@@ -29,7 +29,7 @@ public class BonusManager : MonoBehaviour
         stdScore = c.standardScore;
         maxCombo = c.maxCombo;
         startComboTime = c.startComboTime;
-        textHoldingTime = new WaitForSeconds(c.textHoldingTime);
+        textHoldingTime = CoroutineCache.WaitForSeconds(c.textHoldingTime);
 
         ComboTimePanel.SetActive(false);
         bonusScoreText.gameObject.SetActive(false);

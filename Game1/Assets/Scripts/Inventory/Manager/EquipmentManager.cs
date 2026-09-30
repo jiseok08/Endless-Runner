@@ -14,19 +14,6 @@ public class EquipmentManager : MonoBehaviour
         GameEvents.Subscribe(Condition.START, ApplyItemEffect);
     }
 
-    private void ApplyItemEffect()
-    {
-        foreach (ItemData item in equippedItems)
-        {
-            if (item == null || item.Effect == null)
-            {
-                continue;
-            }
-
-            item.Effect.Apply();
-        }
-    }
-
     public bool EquipItem(ItemData itemData)
     {
         if (itemData == null || IsEquipped(itemData))
@@ -48,6 +35,19 @@ public class EquipmentManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void ApplyItemEffect()
+    {
+        foreach (ItemData item in equippedItems)
+        {
+            if (item == null || item.Effect == null)
+            {
+                continue;
+            }
+
+            item.Effect.Apply();
+        }
     }
 
     public bool RemoveItem(ItemData itemData)

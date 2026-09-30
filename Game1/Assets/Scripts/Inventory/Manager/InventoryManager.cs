@@ -5,6 +5,7 @@ public class InventoryManager : MonoBehaviour, ITargetHaver
 {
     private const string ItemSaveKey = "Inventory.Item.";
 
+    [SerializeField] List<ItemData> itemDatas = new List<ItemData>();
     [SerializeField] List<ItemData> inventory = new List<ItemData>();
 
     [SerializeField] EquipmentManager equipmentManager;
@@ -19,9 +20,21 @@ public class InventoryManager : MonoBehaviour, ITargetHaver
 
     private ItemData target;
 
+    private bool isLoaded;
+
+    public List<ItemData> ItemDatas => itemDatas;
+    public bool IsLoaded => isLoaded;
+
     private void Awake()
     {
-        CreateCheck();
+        if (!ValidateItemIds())
+        {
+            return;
+        }
+
+        LoadItems();
+
+        isLoaded = true;
     }
 
     public void CreateCheck()
@@ -44,11 +57,13 @@ public class InventoryManager : MonoBehaviour, ITargetHaver
         }
     }
 
-    public void LoadItems(IEnumerable<ItemData> itemDatas)
+    private void LoadItems()
     {
         foreach (ItemData item in itemDatas)
         {
-            if (item == null || string.IsNullOrWhiteSpace(item.ItemId) || inventory.Contains(item))
+            if (item == null || 
+                string.IsNullOrWhiteSpace(item.ItemId) || 
+                inventory.Contains(item))
             {
                 continue;
             }
@@ -60,6 +75,64 @@ public class InventoryManager : MonoBehaviour, ITargetHaver
         }
 
         CreateCheck();
+    }
+
+    public void AddItem(ItemData itemData)
+    {
+        if (inventory.Contains(itemData))
+        {
+            return;
+        }
+
+        if (itemData == null)
+        {
+            Debug.LogError("Item Id가 비어있음");
+
+            return;
+        }
+
+        inventory.Add(itemData);
+
+        PlayerPrefs.SetInt(ItemSaveKey + itemData.ItemId, 1);
+        PlayerPrefs.Save();
+
+        CreateCheck();
+    }
+
+    private bool ValidateItemIds()
+    {
+        Dictionary<string, ItemData> itemsById = new Dictionary<string, ItemData>();
+
+        foreach (ItemData item in itemDatas)
+        {
+            if (item == null)
+            {
+                continue;
+            }
+
+            if (item.ItemId == null)
+            {
+                Debug.LogError("Item Id가 비어있음");
+
+                return false;
+            }
+
+            if (itemsById.TryGetValue(item.ItemId, out ItemData existingItem))
+            {
+                if (existingItem != item)
+                {
+                    Debug.LogError("Item Id가 중복됨");
+
+                    return false;
+                }
+
+                continue;
+            }
+
+            itemsById.Add(item.ItemId, item);
+        }
+
+        return true;
     }
 
     public void Equip(ItemData target)
@@ -82,28 +155,6 @@ public class InventoryManager : MonoBehaviour, ITargetHaver
                 profile.gameObject.SetActive(true);
             }
         }
-    }
-
-    public void AddItem(ItemData itemData)
-    {
-        if (itemData == null || inventory.Contains(itemData))
-        {
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(itemData.ItemId))
-        {
-            Debug.LogError("Item Id가 비어있음");
-
-            return;
-        }
-
-        inventory.Add(itemData);
-
-        PlayerPrefs.SetInt(ItemSaveKey + itemData.ItemId, 1);
-        PlayerPrefs.Save();
-
-        CreateCheck();
     }
 
     public bool HasItem(ItemData itemData)

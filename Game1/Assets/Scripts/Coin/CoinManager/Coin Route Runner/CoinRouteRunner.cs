@@ -6,13 +6,9 @@ public class CoinRouteRunner : MonoBehaviour, ISafeRouteReceiver
 {
     private CoinRouteRunnerMovement runnerMovement;
 
-    [SerializeField] Transform[] obstacleSpawnPoints;
+    [SerializeField] Vector3[] obstacleSpawnPoints;
 
-    private readonly Queue<(
-        RoadLine line,
-        ObstacleType? obstacle,
-        float passDistance
-    )> routes = new();
+    private readonly Queue<(RoadLine line, ObstacleType? obstacle, float passDistance)> routes = new();
 
     private RoadLine nowLine = RoadLine.MIDDLE;
 
@@ -34,6 +30,8 @@ public class CoinRouteRunner : MonoBehaviour, ISafeRouteReceiver
 
         jumpOffset = c.jumpOffset;
         passMargin = c.passMargin;
+
+        obstacleSpawnPoints = ConfigManager.Instance.Config.obstacleSpawn.spawnPoints;
     }
 
     private void OnEnable()
@@ -46,8 +44,7 @@ public class CoinRouteRunner : MonoBehaviour, ISafeRouteReceiver
     {
         int index = RoadLineInfo.ToIndex(line);
 
-        float distance =
-            obstacleSpawnPoints[index].position.z - transform.position.z;
+        float distance = obstacleSpawnPoints[index].z - transform.position.z;
 
         float passDistance = movedDistance + distance;
 
@@ -98,14 +95,11 @@ public class CoinRouteRunner : MonoBehaviour, ISafeRouteReceiver
 
         MoveToLine(route.line);
 
-        float jumpPeakTime =
-            runnerMovement.JumpInitialSpeed / -Physics.gravity.y;
+        float jumpPeakTime = runnerMovement.JumpInitialSpeed / -Physics.gravity.y;
 
         float jumpDistance = speed * jumpPeakTime + jumpOffset;
 
-        if (route.obstacle == ObstacleType.Normal &&
-            distance > 0f &&
-            distance <= jumpDistance)
+        if (route.obstacle == ObstacleType.Normal && distance > 0f && distance <= jumpDistance)
         {
             runnerMovement.TryJump();
         }

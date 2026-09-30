@@ -22,7 +22,7 @@ public class ObstacleSpawner
         patterns.Enqueue(newPattern);
     }
 
-    public void Spawn(Transform[] spawnPoints)
+    public void Spawn(Vector3[] spawnPoints)
     {
         SpawnPlan createPattern = patterns.Dequeue();
 
@@ -30,7 +30,7 @@ public class ObstacleSpawner
         {
             RoadLine line = RoadLineInfo.FromIndex(i);
 
-            ObstacleType? type = createPattern.GetSpawnData(line);
+            ObstacleType? type = createPattern.GetSpawnData(line);  
 
             if (type == null)
             {
@@ -39,7 +39,7 @@ public class ObstacleSpawner
 
             GameObject obstacle = obstacleProvider.GetObstacle(type.Value);
 
-            obstacle.transform.position = spawnPoints[i].position;
+            obstacle.transform.position = spawnPoints[i];
 
             obstacle.SetActive(true);
         }

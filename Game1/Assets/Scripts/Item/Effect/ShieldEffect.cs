@@ -12,3 +12,5 @@ public class ShieldEffect : ItemEffect
         receiver.AddShield(shieldAmount);
     }
 }
+
+

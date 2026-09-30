@@ -18,14 +18,16 @@ public class AudioManager : Singleton<AudioManager>
         sceneryAudioSource.loop = true;
     }
 
-    public void Listener(string name)
+    public void PlayEffect(string name)
     {
         AudioClip clip = Resources.Load<AudioClip>("Audio/" + name);
+
         if (clip == null)
         {
-            Debug.LogWarning($"AudioClip을 찾지 못함: \"Audio/{name}\"");
+            Debug.LogError("AudioClip을 찾지 못함: " + name);
             return;
         }
+
         effectAudioSource.PlayOneShot(clip);
     }
 

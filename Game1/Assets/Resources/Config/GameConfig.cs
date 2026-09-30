@@ -1,5 +1,5 @@
-using JetBrains.Annotations;
 using System;
+using UnityEngine;
 
 [Serializable]
 public class GameConfig
@@ -7,6 +7,7 @@ public class GameConfig
     public RunnerConfig runner;
     public SpeedManagerConfig speedManager;
     public ScoreManagerConfig scoreManager;
+    public ObstacleSpawnConfig obstacleSpawn;
     public ObstacleManagerConfig obstacleManager;
     public ObstaclePoolConfig obstaclePool;
     public BonusManagerConfig bonusManager;
@@ -19,17 +20,18 @@ public class GameConfig
 [Serializable]
 public class RunnerConfig
 {
-    public float positionX;      
-    public float jumpPower;      
+    public float positionX;
+    public float jumpPower;
+    public float laneChangeTime;
 }
 
 [Serializable]
 public class SpeedManagerConfig
 {
-    public float startSpeed;     
-    public float limitSpeed;     
-    public float increaseSpeed;  
-    public float increaseTime;   
+    public float startSpeed;
+    public float limitSpeed;
+    public float increaseSpeed;
+    public float increaseTime;
 }
 
 [Serializable]
@@ -38,17 +40,38 @@ public class ScoreManagerConfig
     public int baseScore;
     public float scoreInterval;
 }
+[Serializable]
+public class ObstacleSpawnConfig
+{
+    public Vector3[] spawnPoints; 
+}
 
 [Serializable]
 public class ObstacleManagerConfig
 {
-    public float startCycle;            
-    public float startMinCycle;              
-    public float cycleDecrease;               
-    public int tripleProbability;
-    public int doubleLongProbability;
+    public float startCycle;
+    public float startMinCycle;
+    public float limitCycle;
+    public float cycleDecrease;
+
     public int standardStageCount;
     public int lookAheadCount;
+
+    public ObstacleStageConfig[] stages;
+}
+
+[Serializable]
+public class ObstacleStageConfig
+{
+    public int stage;
+    public PatternWeightConfig[] patterns;
+}
+
+[Serializable]
+public class PatternWeightConfig
+{
+    public string pattern;
+    public int weight;
 }
 
 [Serializable]
@@ -62,10 +85,10 @@ public class ObstaclePoolConfig
 [Serializable]
 public class BonusManagerConfig
 {
-    public int standardScore;    
-    public int maxCombo;         
-    public int startComboTime;   
-    public int textHoldingTime;  
+    public int standardScore;
+    public int maxCombo;
+    public int startComboTime;
+    public int textHoldingTime;
 }
 
 [Serializable]

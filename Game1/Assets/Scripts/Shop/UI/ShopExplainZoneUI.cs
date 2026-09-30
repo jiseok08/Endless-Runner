@@ -55,7 +55,7 @@ public class ShopExplainZoneUI : MonoBehaviour
 
     public void Buy()
     {
-        if(!shopManager.Buy(target))
+        if (!shopManager.Buy(target))
         {
             return;
         }

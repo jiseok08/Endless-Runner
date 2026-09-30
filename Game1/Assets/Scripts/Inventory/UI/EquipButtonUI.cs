@@ -19,7 +19,7 @@ public class EquipButtonUI : MonoBehaviour
 
     public void Action()
     {
-        if(inventoryExplainZoneUI.IsEquipped())
+        if (inventoryExplainZoneUI.IsEquipped())
         {
             inventoryExplainZoneUI.UnEnquip();
         }
@@ -33,7 +33,7 @@ public class EquipButtonUI : MonoBehaviour
 
     public void ButtonUpdate()
     {
-        if(inventoryExplainZoneUI.IsEquipped())
+        if (inventoryExplainZoneUI.IsEquipped())
         {
             text.text = "UnEquip";
             image.color = red;

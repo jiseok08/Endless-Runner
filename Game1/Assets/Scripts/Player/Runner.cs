@@ -1,15 +1,32 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Runner : MonoBehaviour
 {
     [SerializeField] RunnerMovement runnerMovement;
     [SerializeField] ShieldController shieldController;
+    private PlayerInput playerInput;
 
     private void Awake()
     {
         runnerMovement = GetComponent<RunnerMovement>();
         shieldController = GetComponent<ShieldController>();
+        playerInput = GetComponent<PlayerInput>();
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.Subscribe(Condition.RESET, ResetRunner);
+
+        GameEvents.Subscribe(Condition.START, InputStart);
+
+        GameEvents.Subscribe(Condition.FINISH, Release);
+        GameEvents.Subscribe(Condition.FINISH, Die);
+    }
+
+    private void Start()
+    {
+        playerInput.DeactivateInput();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -31,68 +48,59 @@ public class Runner : MonoBehaviour
         GameEvents.Publish(Condition.FINISH);
     }
 
-    private void OnEnable()
+    public void InputStart()
     {
-        GameEvents.Subscribe(Condition.RESET, ResetRunner);
-
-        GameEvents.Subscribe(Condition.START, StartInput);
-
-        GameEvents.Subscribe(Condition.FINISH, Die);
-        GameEvents.Subscribe(Condition.FINISH, Release);
+        playerInput.ActivateInput();
     }
 
-    public void StartInput()
+    private void OnLeftMove(InputValue value)
     {
-        StartCoroutine(InputRoutine());
+        if (value.isPressed)
+        {
+            runnerMovement.LeftMove();
+        }
+    }
+
+    private void OnRightMove(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            runnerMovement.RightMove();
+        }
+    }
+
+    private void OnJump(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            runnerMovement.TryJump();
+        }
     }
 
     void Release()
-    {
-        StopAllCoroutines();
+    { 
+        playerInput.DeactivateInput();
+
+        runnerMovement.Release();
     }
 
     void ResetRunner()
     {
-        StopAllCoroutines();
-
         runnerMovement.ResetMovement();
-    }
-
-    IEnumerator InputRoutine()
-    {
-        while (true)
-        {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                runnerMovement.LeftMove();
-            }
-
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                runnerMovement.RightMove();
-            }
-
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                runnerMovement.TryJump();
-            }
-
-            yield return null;
-        }
     }
 
     void Die()
     {
-        AudioManager.Instance.Listener("Conflict");
+        AudioManager.Instance.PlayEffect("Conflict");
     }
 
     private void OnDisable()
     {
         GameEvents.UnSubscribe(Condition.RESET, ResetRunner);
 
-        GameEvents.UnSubscribe(Condition.START, StartInput);
+        GameEvents.UnSubscribe(Condition.START, InputStart);
 
-        GameEvents.UnSubscribe(Condition.FINISH, Die);
         GameEvents.UnSubscribe(Condition.FINISH, Release);
+        GameEvents.UnSubscribe(Condition.FINISH, Die);
     }
 }

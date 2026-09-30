@@ -1,16 +1,27 @@
+using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CoinManager : Singleton<CoinManager>
 {
     private const string SaveKey = "Coin";
 
+    [SerializeField] Text[] coinText;
+
     [SerializeField] int coin;
 
     public int Coin => coin;
 
+    public event Action CoinChanged;
+
     protected override void Initialize()
     {
-        coin = PlayerPrefs.GetInt(SaveKey, 0);  
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+
+        coin = PlayerPrefs.GetInt(SaveKey, 0);
+
+        CoinChanged?.Invoke();
     }
 
     private void OnEnable()
@@ -21,6 +32,8 @@ public class CoinManager : Singleton<CoinManager>
     public void AddCoin(int coinValue)
     {
         coin += coinValue;
+
+        CoinChanged?.Invoke();
     }
 
     public bool TrySpendCoin(int price)
@@ -30,6 +43,8 @@ public class CoinManager : Singleton<CoinManager>
             coin -= price;
 
             Save();
+
+            CoinChanged?.Invoke();
 
             return true;
         }

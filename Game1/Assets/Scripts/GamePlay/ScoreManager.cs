@@ -29,9 +29,9 @@ public class ScoreManager : Singleton<ScoreManager>, IScoreMultiplierReceiver
 
         baseScore = c.baseScore;
 
-        scoreInterval = new WaitForSeconds(c.scoreInterval);
+        scoreInterval = CoroutineCache.WaitForSeconds(c.scoreInterval);
 
-        highScore = PlayerPrefs.GetInt(SaveKey, 0); // HighScore 값을 가져오고 없다면 0을 반환
+        highScore = PlayerPrefs.GetInt(SaveKey, 0);
         highScoreText.text = "High Score : " + highScore;
 
         ResetScore();

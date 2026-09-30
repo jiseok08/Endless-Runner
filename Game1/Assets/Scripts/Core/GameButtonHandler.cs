@@ -1,17 +1,17 @@
 using UnityEngine;
 
-public class GameManager : Singleton<GameManager>
+public class GameButtonHandler : Singleton<GameButtonHandler>
 {
     public void StartGame()
     {
         GameEvents.Publish(Condition.START);
         AudioManager.Instance.ScenerySound("Execute");
-        AudioManager.Instance.Listener("Enter Button");
+        AudioManager.Instance.PlayEffect("Enter Button");
     }
 
     public void RestartGame()
     {
         GameEvents.Publish(Condition.RESET);
-        AudioManager.Instance.Listener("Enter Button");
+        AudioManager.Instance.PlayEffect("Enter Button");
     }
 }

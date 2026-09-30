@@ -17,7 +17,7 @@ public class Road : MonoBehaviour, ICollidable
 
     public void OnInteract()
     {
-        if(callback != null)
+        if (callback != null)
         {
             callback.Invoke();
         }

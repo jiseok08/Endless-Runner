@@ -16,10 +16,9 @@ public class SpeedManager : Singleton<SpeedManager>
 
     [SerializeField] WaitForSeconds increaseTime;
 
+    public float Speed => speed;
 
-    public float Speed { get { return speed; } }
-    
-    public float InitializeSpeed { get { return initializeSpeed; } }
+    public float InitializeSpeed => initializeSpeed;
 
     protected void Start()
     {
@@ -29,7 +28,7 @@ public class SpeedManager : Singleton<SpeedManager>
         limitSpeed = c.limitSpeed;
         increaseSpeed = c.increaseSpeed;
 
-        increaseTime = new WaitForSeconds(c.increaseTime);
+        increaseTime = CoroutineCache.WaitForSeconds(c.increaseTime);
 
         ResetSpeed();
     }

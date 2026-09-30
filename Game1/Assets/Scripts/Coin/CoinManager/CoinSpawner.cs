@@ -7,7 +7,7 @@ public class CoinSpawner : MonoBehaviour
 
     [SerializeField] Transform coinRouteRunner;
 
-    private float spawnInterval;
+    private WaitForSeconds spawnInterval;
     private float heightOffset;
 
     private Coroutine spawnCoroutine;
@@ -21,7 +21,7 @@ public class CoinSpawner : MonoBehaviour
     {
         var c = ConfigManager.Instance.Config.coinSpawner;
 
-        spawnInterval = c.spawnInterval;
+        spawnInterval = CoroutineCache.WaitForSeconds(c.spawnInterval);
         heightOffset = c.heightOffset;
     }
 
@@ -47,7 +47,7 @@ public class CoinSpawner : MonoBehaviour
         {
             SpawnCoin();
 
-            yield return CoroutineCache.WaitForSeconds(spawnInterval);
+            yield return spawnInterval;
         }
     }
 

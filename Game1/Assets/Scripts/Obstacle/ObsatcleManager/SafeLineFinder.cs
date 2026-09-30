@@ -31,7 +31,7 @@ public class SafeLineFinder : MonoBehaviour
             }
             else
             {
-                Debug.LogError("ISafeRouteReceiver를 구현한 컴포넌트를 연결해야 합니다.");
+                Debug.LogError("ISafeRouteReceiver가 아님");
             }
         }
     }
@@ -46,29 +46,9 @@ public class SafeLineFinder : MonoBehaviour
         nowLine = RoadLine.MIDDLE;
     }
 
-    public (bool success, RoadLine safeLine, ObstacleType? obstacle) FindSafeLine(SpawnPlan[] plans, bool updateLine = true)
+    public (bool success, RoadLine safeLine, ObstacleType? obstacle) 
+        FindSafeLine(SpawnPlan[] plans, bool updateLine = true)
     {
-        if (plans == null)
-        {
-            Debug.LogError("장애물 패턴 배열이 null입니다.");
-            return (false, RoadLine.MIDDLE, null);
-        }
-
-        if (plans.Length == 0)
-        {
-            Debug.LogError("장애물 패턴 배열이 비어 있습니다.");
-            return (false, RoadLine.MIDDLE, null);
-        }
-
-        for (int i = 0; i < plans.Length; i++)
-        {
-            if (plans[i] == null)
-            {
-                Debug.LogError($"plans[{i}]에 계획이 없습니다.");
-                return (false, RoadLine.MIDDLE, null);
-            }
-        }
-
         for (int i = moves.Length - 1; i > 0; i--)
         {
             int randomIndex = Random.Range(0, i + 1);
@@ -112,7 +92,7 @@ public class SafeLineFinder : MonoBehaviour
 
         foreach (int move in moves)
         {
-            int index = RoadLineInfo.ToIndex(line) + move;
+            int index = RoadLineInfo.ToIndex(line) + move;  
 
             if (index < 0 || index >= RoadLineInfo.RoadCount)
             {

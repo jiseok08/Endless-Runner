@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemId: 1
   itemName: Badge
-  description: The base score increase is multiplied by 1.5.
+  description: Multiplies base score gain by 1.5.
   price: 750
   icon: {fileID: 21300000, guid: f6063f7edf88e104f9efd8e3d3fdb398, type: 3}
   effect: {fileID: 11400000, guid: 2526e26cba925b749838086a93442b22, type: 2}

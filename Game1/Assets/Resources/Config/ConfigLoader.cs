@@ -1,26 +1,31 @@
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public static class ConfigLoader
 {
-    private const string ConfigPath = "Config/balance_config";
+    private const string BalanceConfig = "Config/balance_config";
 
     public static GameConfig Load()
     {
-        TextAsset json = Resources.Load<TextAsset>(ConfigPath);
+        TextAsset json = Resources.Load<TextAsset>(BalanceConfig);
+
         if (json == null)
         {
-            Debug.LogError("json == null (Config/balance_config)");
+            Debug.LogError("JSON 파일을 불러오지 못함");
             return null;
         }
 
         GameConfig config = JsonUtility.FromJson<GameConfig>(json.text);
+
         if (config == null)
         {
-            Debug.LogError("config == null(Config / balance_config)");
+            Debug.LogError("GameConfig 생성 실패");
             return null;
         }
 
         return config;
     }
 }
+
+
+
+
